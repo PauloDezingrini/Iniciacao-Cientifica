@@ -82,7 +82,8 @@ while True:
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
     solucao = Solucao(numero_de_pontos)
-    solucao.encontrarSolucaoRandomica(lista_de_pontos)
+    # solucao.encontrarSolucaoRandomica(lista_de_pontos)
+    solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
     solucao.calcularDistTotal(matrizDistancias)
     print(solucao)
     solucao.plotarSolucao(arquivo_a_ser_lido)

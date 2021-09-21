@@ -39,21 +39,44 @@ class Solucao(object):
             self.__pontos.append(aux[index])
             aux.pop(index)
 
+    def encontrarSolucaoVizinhoProximo(self,lista_de_pontos,matriz_de_distancias): 
+        pontos_utilizados = []
+        pontos_utilizados.append(0)
+
+        # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
+        # foi definido previamente
+        size = len(lista_de_pontos)
+        posNovoPonto = 0
+        while(len(pontos_utilizados) < self.__numero_de_pontos):
+            # Representa o ponto de saída de determinado trecho da rota
+            saiDe = pontos_utilizados[-1]
+            menorDist = 0
+            for i in range(size):
+                if((matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
+                    if i not in pontos_utilizados:
+                        menorDist = matriz_de_distancias[saiDe][i]
+                        posNovoPonto = i
+
+            pontos_utilizados.append(posNovoPonto)
+
+        for i in range(self.__numero_de_pontos):
+            self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
+
     def plotarSolucao(self,nome_do_arquivo):
         x = []
         y = []
         for ponto in self.__pontos:
             x.append(ponto.getX())
             y.append(ponto.getY())
-        plt.plot(x,y)
-        plt.xlabel('Coordenadas x')
-        plt.ylabel('Coordenadas y')
-        titulo = 'Solução aleatória para ' + nome_do_arquivo 
-        subtitle = 'Distância Total k = ' + str(self.__distTotal)
-        plt.title(subtitle)
-        plt.suptitle(titulo)
+        fig , ax = plt.subplots(figsize=(10,6))
+        ax.plot(x,y,marker = 'o')
+        titulo = 'Solução para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
+        ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
         for ponto in self.__pontos:
             plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()))
+        posFormat = nome_do_arquivo.find('.')
+        nome  = 'Solução para ' + nome_do_arquivo[:posFormat] + '.pdf'
+        plt.savefig(nome,format = 'pdf')
         plt.show()
         return plt
         
