@@ -62,18 +62,37 @@ class Solucao(object):
         for i in range(self.__numero_de_pontos):
             self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
 
-    def plotarSolucao(self,nome_do_arquivo):
+    def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
+        # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
         y = []
         for ponto in self.__pontos:
             x.append(ponto.getX())
             y.append(ponto.getY())
+        # Prepara os demais pontos para inserir no gráfico
+
+        x1 = []
+        y1 = []
+        for ponto in lista_de_pontos:
+            x1.append(ponto.getX())
+            y1.append(ponto.getY())
+        
+        # Define o tamanho do gráfico a ser gerado
         fig , ax = plt.subplots(figsize=(10,6))
+        #Plota os demais pontos no gráfico
+        ax.scatter(x1,y1,marker = 'o')
+        # Plota os pontos pertencentes a solução no gráfico
         ax.plot(x,y,marker = 'o')
+
+        # Configura o titulo do gráfico
         titulo = 'Solução para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
         ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
-        for ponto in self.__pontos:
+
+        # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
+        for ponto in lista_de_pontos:
             plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()))
+
+        # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
         nome  = 'Solução para ' + nome_do_arquivo[:posFormat] + '.pdf'
         plt.savefig(nome,format = 'pdf')

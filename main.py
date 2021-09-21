@@ -86,7 +86,7 @@ while True:
     solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
     solucao.calcularDistTotal(matrizDistancias)
     print(solucao)
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)"    )
 
