@@ -3,6 +3,8 @@ import random
 
 import matplotlib.pyplot as plt
 
+from mip import Model, xsum, minimize, BINARY
+
 class Solucao(object):
     def __init__(self,numero_de_pontos):
         self.__pontos = []
@@ -62,6 +64,61 @@ class Solucao(object):
         for i in range(self.__numero_de_pontos):
             self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
 
+    def encontrarSolucaoModelo(self,lista_de_pontos,matriz_de_distancias):
+        model = Model()
+        x = [[model.add_var(var_type=BINARY) for j in lista_de_pontos] for i in lista_de_pontos]
+        y = [model.add_var(var_type=BINARY) for i in lista_de_pontos]
+        F = [[model.add_var() for i in lista_de_pontos] for j in lista_de_pontos]
+
+        # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
+        size1 = set(range(len(lista_de_pontos)))
+        size2 = set(range(1,len(lista_de_pontos)))
+
+        model.objective = minimize(xsum(matriz_de_distancias[i][j]*x[i][j] for i in size1 for j in size1))
+
+        # Restricoes 2 e 3
+        model += xsum(x[0][j] for j in size1) == 1
+        model += xsum(x[i][0] for i in size1) == 0
+
+        # Restricoes 4 e 5
+        for j in size1:
+            model += xsum(x[i][j] for i in size1 if i!=j) <= 1
+
+        for i in size1:
+            model += xsum(x[i][j] for j in size1 if i!=j) <= 1
+        
+        # Restriçao 6
+        model += xsum(y[i] for i in size1) == self.__numero_de_pontos
+
+        # Restriçao 7
+        for i in size2:
+            model += (xsum(F[h][i]for h in size1) - xsum(F[i][j] for j in size1)) == y[i]
+        # Restriçao 8
+        for i in size1:
+            for j in size1:
+                model+= F[i][j] <= (self.__numero_de_pontos - 1)*x[i][j]
+        # Restriçao 9
+        for j in size1:
+            model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
+
+        model.optimize()
+
+        if model.num_solutions:
+            self.__distTotal = model.objective_value
+            nc = 0
+            print(nc)
+            print('\n')
+            while True:
+                nc = [i for i in size1 if x[nc][i] >= 0.99][0]
+                print(nc)
+                print('\n')
+                self.__pontos.append(lista_de_pontos[nc])
+                if nc==0:
+                    break
+
+
+        pass
+
     def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
         # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
@@ -82,7 +139,7 @@ class Solucao(object):
         #Plota os demais pontos no gráfico
         ax.scatter(x1,y1,marker = 'o')
         # Plota os pontos pertencentes a solução no gráfico
-        ax.plot(x,y,marker = 'o')
+        ax.plot(x,y,marker = 'o',color='red')
 
         # Configura o titulo do gráfico
         titulo = 'Solução para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
