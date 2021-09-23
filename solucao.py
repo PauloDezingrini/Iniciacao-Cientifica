@@ -82,15 +82,18 @@ class Solucao(object):
         #Plota os demais pontos no gráfico
         ax.scatter(x1,y1,marker = 'o')
         # Plota os pontos pertencentes a solução no gráfico
-        ax.plot(x,y,marker = 'o')
+        ax.plot(x,y,marker = 'o',color = 'red')
 
         # Configura o titulo do gráfico
         titulo = 'Solução para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
         ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
 
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
-        for ponto in lista_de_pontos:
-            plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()))
+        for ponto in self.__pontos:
+            if ponto.getNumero() == 1:
+                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'x-large')
+            else : 
+                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'x-small')
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
