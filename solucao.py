@@ -26,7 +26,7 @@ class Solucao(object):
         self.__distTotal = distTotal
 
 
-    def encontrarSolucaoRandomica(self,lista_de_pontos):
+    def encontrarSolucaoRandomica(self,lista_de_pontos,matriz_de_distancias):
         # A lista aux é necessária para poder remover os pontos já utilizados na solução da lista sem alterar a lista de pontos.
         # Já que o processo para encontrar uma solução poderá ocorrer mais de 1 vez
         aux = lista_de_pontos
@@ -40,6 +40,7 @@ class Solucao(object):
             index = random.randint(0,len(aux)-1)
             self.__pontos.append(aux[index])
             aux.pop(index)
+        self.calcularDistTotal(matriz_de_distancias)
 
     def encontrarSolucaoVizinhoProximo(self,lista_de_pontos,matriz_de_distancias): 
         pontos_utilizados = []
@@ -63,31 +64,33 @@ class Solucao(object):
 
         for i in range(self.__numero_de_pontos):
             self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
+        self.calcularDistTotal(matriz_de_distancias)
 
     def encontrarSolucaoModelo(self,lista_de_pontos,matriz_de_distancias):
-        model = Model()
-        x = [[model.add_var(var_type=BINARY) for j in lista_de_pontos] for i in lista_de_pontos]
-        y = [model.add_var(var_type=BINARY) for i in lista_de_pontos]
-        F = [[model.add_var() for i in lista_de_pontos] for j in lista_de_pontos]
-
         # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
         size1 = set(range(len(lista_de_pontos)))
         size2 = set(range(1,len(lista_de_pontos)))
 
+        model = Model()
+        x = [[model.add_var(var_type=BINARY) for j in size1] for i in size1]
+        y = [model.add_var(var_type=BINARY) for i in size1]
+        F = [[model.add_var() for i in size1] for j in size1]
+
         model.objective = minimize(xsum(matriz_de_distancias[i][j]*x[i][j] for i in size1 for j in size1))
 
-        # Restricoes 2 e 3
-        model += xsum(x[0][j] for j in size1) == 1
-        model += xsum(x[i][0] for i in size1) == 0
+        # Restricao 2 : Garante que só haverá uma rota saindo do ponto inicial
+        model += xsum(x[0][j] for j in size2) == 1
+        # Restricao 3 : Garante que não terá nenhuma rota chegando no ponto inicial
+        model += xsum(x[i][0] for i in size2) == 0
 
-        # Restricoes 4 e 5
+        # Restricoes 4 e 5 : Garantem que só haverá uma rota saindo e uma chegando em cada ponto
         for j in size1:
             model += xsum(x[i][j] for i in size1 if i!=j) <= 1
 
         for i in size1:
             model += xsum(x[i][j] for j in size1 if i!=j) <= 1
         
-        # Restriçao 6
+        # Restriçao 6 : Garante que o número de pontos do modelo será igual ao número de pontos requisitado.
         model += xsum(y[i] for i in size1) == self.__numero_de_pontos
 
         # Restriçao 7
@@ -97,28 +100,31 @@ class Solucao(object):
         for i in size1:
             for j in size1:
                 model+= F[i][j] <= (self.__numero_de_pontos - 1)*x[i][j]
-        # Restriçao 9
+        # Restriçao 9 : 
         for j in size1:
             model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
 
-        model.optimize()
-
+        model.optimize(max_seconds=300)
+        pontos_utilizados = []
         if model.num_solutions:
             self.__distTotal = model.objective_value
-            nc = 0
-            print(nc)
-            print('\n')
+            posSaida = 0
+            pontos_utilizados.append(0)
             while True:
-                nc = [i for i in size1 if x[nc][i] >= 0.99][0]
-                print(nc)
-                print('\n')
-                self.__pontos.append(lista_de_pontos[nc])
-                if nc==0:
+                for i in size2:
+                    if(x[posSaida][i].x >= 0.90 and i not in pontos_utilizados):
+                        pontos_utilizados.append(i)
+                        posSaida = i
+                        print(posSaida)
+                        break
+                if(len(pontos_utilizados) == self.__numero_de_pontos):
                     break
+            for i in range(self.__numero_de_pontos):
+                self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
 
+            
 
-        pass
-
+        
     def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
         # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
@@ -150,7 +156,7 @@ class Solucao(object):
             if ponto.getNumero() == 1:
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'x-large')
             else : 
-                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'x-small')
+                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')

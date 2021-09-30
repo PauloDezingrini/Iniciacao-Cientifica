@@ -51,7 +51,7 @@ def realizarLeitura(arquivo_a_ser_lido):
     lerCoord = False
     while True:
         str  = file.readline()
-        if str == "EOF":
+        if str == "EOF" or str == "EOF\n":
             break
         if lerCoord:
             # Separa a linha a partir dos espaçoes e então remove os espaços vazios que restarem devido a espaços seguidos e strings "" que 
@@ -82,14 +82,14 @@ while True:
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
     solucao = Solucao(numero_de_pontos)
-    # solucao.encontrarSolucaoRandomica(lista_de_pontos)
-    solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
-    # solucao.encontrarSolucaoModelo(lista_de_pontos,matrizDistancias)
-    solucao.calcularDistTotal(matrizDistancias)
+    # solucao.encontrarSolucaoRandomica(lista_de_pontos,matrizDistancias)
+    # solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
+    solucao.encontrarSolucaoModelo(lista_de_pontos,matrizDistancias)
+    
     print(solucao)
     solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)
 
-    continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)"    )
+    continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 
     if continuar == 'N':
         break
