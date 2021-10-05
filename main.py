@@ -82,9 +82,16 @@ while True:
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
     solucao = Solucao(numero_de_pontos)
-    # solucao.encontrarSolucaoRandomica(lista_de_pontos,matrizDistancias)
-    # solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
-    solucao.encontrarSolucaoModelo(lista_de_pontos,matrizDistancias)
+
+    MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata, 4-Modelo : "))
+    if MetodoResolucao == 1:
+        solucao.encontrarSolucaoRandomica(lista_de_pontos,matrizDistancias)
+    elif MetodoResolucao == 2:
+        solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
+    elif MetodoResolucao == 3:
+        solucao.encontrarSolucaoInsercaoMaisBarata(lista_de_pontos,matrizDistancias)
+    elif MetodoResolucao == 4:
+        solucao.encontrarSolucaoModelo(lista_de_pontos,matrizDistancias)
     
     print(solucao)
     solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)

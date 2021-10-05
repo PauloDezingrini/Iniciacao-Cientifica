@@ -1,3 +1,4 @@
+from typing import Sized
 from ponto import *
 import random
 
@@ -42,6 +43,21 @@ class Solucao(object):
             aux.pop(index)
         self.calcularDistTotal(matriz_de_distancias)
 
+
+    def encontrarPontoMaisProximo(self,lista_de_pontos,matriz_de_distancias,size,ponto):
+    # Size é passado como paramentro simplesmente para evitar fazer a operaçao len(lista_de_pontos) repetidas vezes 
+        posNovoPonto = 0
+        # Representa o ponto de saída de determinado trecho da rota
+        saiDe = lista_de_pontos[ponto]
+        menorDist = 0
+        for i in range(size):
+            if((matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
+                # Somente escolhe como ponto mais proximo , pontos que não estejam na solução
+                if i not in lista_de_pontos:
+                    menorDist = matriz_de_distancias[saiDe][i]
+                    posNovoPonto = i
+        return posNovoPonto
+
     def encontrarSolucaoVizinhoProximo(self,lista_de_pontos,matriz_de_distancias): 
         pontos_utilizados = []
         pontos_utilizados.append(0)
@@ -49,19 +65,43 @@ class Solucao(object):
         # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
         # foi definido previamente
         size = len(lista_de_pontos)
-        posNovoPonto = 0
         while(len(pontos_utilizados) < self.__numero_de_pontos):
-            # Representa o ponto de saída de determinado trecho da rota
-            saiDe = pontos_utilizados[-1]
-            menorDist = 0
-            for i in range(size):
-                if((matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
-                    if i not in pontos_utilizados:
-                        menorDist = matriz_de_distancias[saiDe][i]
-                        posNovoPonto = i
+            # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
+            pontos_utilizados.append(self.encontrarPontoMaisProximo(pontos_utilizados,matriz_de_distancias,size,-1))
 
-            pontos_utilizados.append(posNovoPonto)
+        for i in range(self.__numero_de_pontos):
+            self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
+        self.calcularDistTotal(matriz_de_distancias)
 
+    def encontrarSolucaoInsercaoMaisBarata(self,lista_de_pontos,matriz_de_distancias):
+        # Tamanho da lista de pontos , utilizada para achar os pontos mais próximos de um determinado ponto
+        size = len(lista_de_pontos)
+        # Array auxiliar que representa os pontos que viram a ser utilizado na solução e a inserção do ponto inicial , que neste caso é o ponto 1 
+        pontos_utilizados = []
+        pontos_utilizados.append(0)
+        # Variáveis auxiliares
+        posBestInsertion = 0
+        index = 0
+        while(len(pontos_utilizados) < self.__numero_de_pontos):
+            bestInsertion = -1
+            for i in range(len(pontos_utilizados)):
+                # Para cada ponto já presente na solução , ele encontra seu respectivo ponto mais proximo
+                ponto = self.encontrarPontoMaisProximo(pontos_utilizados,matriz_de_distancias,size,i)
+                # Caso em que o ponto que está sendo analisado , possivelmente, será inserido após o ultimo ponto que já está na solução
+                if(i+1 >= len(pontos_utilizados)):
+                    dist = matriz_de_distancias[pontos_utilizados[i]][ponto]
+                else:
+                    # Caso geral
+                    dist = matriz_de_distancias[pontos_utilizados[i]][ponto] + matriz_de_distancias[ponto][pontos_utilizados[i+1]] - matriz_de_distancias[pontos_utilizados[i]][pontos_utilizados[i+1]]
+                # caso a distancia calculcada seja menor que a atual inserção mais barata ela o substitui
+                if (dist <= bestInsertion or bestInsertion == -1):
+                    bestInsertion = dist
+                    posBestInsertion = ponto
+                    index = i
+            # Apos a execucação de todo o loop , insere no array de pontos utilizados a posição do ponto , dentro do array lista de pontos que resulta na inserção mais barata
+            pontos_utilizados.insert(index+1,posBestInsertion)
+
+        # Por fim, passa os pontos encontrados para a lista de pontos que a classe possui como atributo. 
         for i in range(self.__numero_de_pontos):
             self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
         self.calcularDistTotal(matriz_de_distancias)
@@ -104,7 +144,7 @@ class Solucao(object):
         for j in size1:
             model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
 
-        model.optimize(max_seconds=300)
+        model.optimize(max_seconds=3600)
         pontos_utilizados = []
         if model.num_solutions:
             self.__distTotal = model.objective_value
@@ -122,9 +162,6 @@ class Solucao(object):
             for i in range(self.__numero_de_pontos):
                 self.__pontos.append(lista_de_pontos[pontos_utilizados[i]])
 
-            
-
-        
     def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
         # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
@@ -154,9 +191,9 @@ class Solucao(object):
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
         for ponto in self.__pontos:
             if ponto.getNumero() == 1:
-                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'x-large')
-            else : 
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
+            else : 
+                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'medium')
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
