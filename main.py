@@ -39,6 +39,37 @@ def contarElementosMatriz(matriz):
     print(numeroElementos)
 
 
+def lerMatriz(arquivo_a_ser_lido):
+    file = open(arquivo_a_ser_lido,'r')
+    matriz = []
+    readDists = False
+    type = ''
+    while True:
+        str = file.readline()
+        if "EDGE_WEIGHT_FORMAT: UPPER_ROW " in str:
+            type = 'Upper_row'
+        if (str == "NODE_COORD_SECTION\n" or str =="DISPLAY_DATA_SECTION\n"):
+            break
+        if readDists:
+            aux = []
+            str = str.split(" ")
+            str = remove_values_from_list(str," ")
+            str = remove_values_from_list(str,"")
+            str[-1] = str[-1].strip('\n')
+            for i in range(len(str)):
+                aux.append(int(str[i]))
+            matriz.append(aux)
+        if("EDGE_WEIGHT_SECTION" in str):
+            readDists = True
+    if type == 'Upper_row':
+        print("HBAKLK")
+        # for i in range(len(matriz)):
+        #     matriz[i].insert(0,0)
+        size = set(range(len(matriz) + 1))
+        matriz2 = [[0 if i ==j else matriz[i][j-i-1] if j>i else matriz[j][i-j-1] for j in size] for i in size]
+        matriz = matriz2
+
+    return matriz
 
 # Responsável por fazer a leitura do arquivo , falta implementar os casos de entradas de dados especiais. Como quando recebe direto a matriz
 # de distâncias
@@ -47,7 +78,6 @@ def realizarLeitura(arquivo_a_ser_lido):
     file = open(arquivo_a_ser_lido,'r')
     str = "a"
     lista = []
-
     lerCoord = False
     while True:
         str  = file.readline()
@@ -65,8 +95,9 @@ def realizarLeitura(arquivo_a_ser_lido):
             newPonto = Ponto(filtered[0],filtered[1],filtered[2])
             lista.append(newPonto)
         # Começa a leitura a partir da linha que ele encontra um dos textos abaixo.
-        if str == "NODE_COORD_SECTION\n" or str =="DISPLAY_DATA_SECTION\n":
+        if (str == "NODE_COORD_SECTION\n" or str =="DISPLAY_DATA_SECTION\n"):
             lerCoord = True
+
     file.close()
     return lista
 
@@ -76,22 +107,24 @@ while True:
     arquivo_a_ser_lido = input("Digite o nome do arquivo que será lido: ")
 
     lista_de_pontos = realizarLeitura(arquivo_a_ser_lido)
+    matrizDistancias = lerMatriz(arquivo_a_ser_lido)
 
-    matrizDistancias = calcularDistancias(lista_de_pontos)
+    if len(matrizDistancias) == 0:
+        matrizDistancias = calcularDistancias(lista_de_pontos)
 
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
-    solucao = Solucao(numero_de_pontos)
+    solucao = Solucao(numero_de_pontos,lista_de_pontos,matrizDistancias)
 
     MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata, 4-Modelo : "))
     if MetodoResolucao == 1:
-        solucao.encontrarSolucaoRandomica(lista_de_pontos,matrizDistancias)
+        solucao.encontrarSolucaoRandomica()
     elif MetodoResolucao == 2:
-        solucao.encontrarSolucaoVizinhoProximo(lista_de_pontos,matrizDistancias)
+        solucao.encontrarSolucaoVizinhoProximo()
     elif MetodoResolucao == 3:
-        solucao.encontrarSolucaoInsercaoMaisBarata(lista_de_pontos,matrizDistancias)
+        solucao.encontrarSolucaoInsercaoMaisBarata()
     elif MetodoResolucao == 4:
-        solucao.encontrarSolucaoModelo(lista_de_pontos,matrizDistancias)
+        solucao.encontrarSolucaoModelo()
     
     print(solucao)
     solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)
