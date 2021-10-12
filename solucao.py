@@ -62,7 +62,7 @@ class Solucao(object):
         self.__pontos.append(self.__lista_de_pontos[0])
         # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
         # foi definido previamente
-        size = len(self.__lista_de_pontos) -1
+        size = len(self.__lista_de_pontos)
         while(len(self.__pontos) < self.__numero_de_pontos):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
             self.encontrarPontoMaisProximo(size,-1)
@@ -70,7 +70,31 @@ class Solucao(object):
         self.calcularDistTotal()
 
     def encontrarSolucaoInsercaoMaisBarata(self):
-        pass
+        size = len(self.__lista_de_pontos)
+        self.__pontos.append(self.__lista_de_pontos[0])
+        self.encontrarPontoMaisProximo(size,-1)
+        self.encontrarPontoMaisProximo(size,-1)
+        count = 3
+        while(count < self.__numero_de_pontos):
+            menorDist = -1
+            for i in range(len(self.__pontos)):
+                for j in range(len(self.__lista_de_pontos)):
+                    if self.__lista_de_pontos[j] not in self.__pontos:
+                        indexJ = self.__lista_de_pontos[j].getNumero() - 1
+                        # print(indexJ , "\n")
+                        if i == count - 1:
+                            dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ]
+                        else:
+                            dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i + 1].getNumero() - 1] - self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][self.__pontos[i+1].getNumero() - 1]
+                        if dist < menorDist or menorDist==-1:
+                            menorDist = dist
+                            after  = i + 1
+                            where = j
+            count += 1
+            self.__pontos.insert(after,self.__lista_de_pontos[where])
+            self.__lista_de_pontos.pop(where)
+        self.calcularDistTotal()
+
 
 
     def encontrarSolucaoModelo(self):
@@ -168,3 +192,4 @@ class Solucao(object):
         plt.savefig(nome,format = 'pdf')
         plt.show()
         return plt
+
