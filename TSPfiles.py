@@ -49,10 +49,10 @@ class TSPfile(object):
         #A partir do edge weight type define qual será o método de leitura ou calculo da matriz de distâncias
         if(self.__edge_type=="EXPLICIT\n"):
             self.__matriz = self.lerMatriz()
-        elif self.__edge_type == "EUC_2D\n" or self.__edge_type == "EUC_3D\n":
+        elif "EUC_2D\n" in self.__edge_type or "EUC_3D\n" in self.__edge_type:
             self.__matriz = self.calcularDistanciasEuclidianas()
         elif self.__edge_type == "GEO\n" : 
-            self.__matriz = self.calcularDistancaisGeograficas()
+            self.__matriz = self.calcularDistanciasGeograficas()
         file.close()
 
     #Caso a matriz seja fornecida , realiza a leitura e caso não seja uma matriz quadrada , a ajusta para fazer com que ela se torne uma
@@ -103,7 +103,7 @@ class TSPfile(object):
             matrizDeDistancias.append(linha)
         return matrizDeDistancias
     
-    def calcularDistancaisGeograficas(self):
+    def calcularDistanciasGeograficas(self):
         matrizDistancias = []
         RRR = 6378.388  
         for i in range(len(self.__list)):

@@ -71,18 +71,22 @@ class Solucao(object):
 
     def encontrarSolucaoInsercaoMaisBarata(self):
         size = len(self.__lista_de_pontos)
+        # Adição dps pontos iniciais a solução
         self.__pontos.append(self.__lista_de_pontos[0])
         self.encontrarPontoMaisProximo(size,-1)
         self.encontrarPontoMaisProximo(size,-1)
+        # count representa o número de pontos ja adicionados a soluçao
         count = 3
+        # Enquanto o número de pontos da solução for menor que a quantidade de pontos que a solução tem que ter(k)
         while(count < self.__numero_de_pontos):
             menorDist = -1
-            for i in range(len(self.__pontos)):
-                for j in range(len(self.__lista_de_pontos)):
-                    if self.__lista_de_pontos[j] not in self.__pontos:
+            for i in range(count): # Percorre a solução
+                for j in range(len(self.__lista_de_pontos)): # Percorre a lista de pontos
+                    if self.__lista_de_pontos[j] not in self.__pontos: # Garante que o ponto j não está na solução
                         indexJ = self.__lista_de_pontos[j].getNumero() - 1
-                        # print(indexJ , "\n")
                         if i == count - 1:
+                            # O indice do ponto é pego dessa maneira , pq queremos o indice do ponto na matriz e como está sendo deletado
+                            # da lista de ponto , os pontos utilizados os indices podem não corresponder
                             dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ]
                         else:
                             dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i + 1].getNumero() - 1] - self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][self.__pontos[i+1].getNumero() - 1]
@@ -91,8 +95,11 @@ class Solucao(object):
                             after  = i + 1
                             where = j
             count += 1
+            # Insere na posição after o ponto que resultou na menor dist que está na posição where e então , por questões de eficiencia
+            # Exclui esse ponto da lista
             self.__pontos.insert(after,self.__lista_de_pontos[where])
             self.__lista_de_pontos.pop(where)
+            # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.calcularDistTotal()
 
 
