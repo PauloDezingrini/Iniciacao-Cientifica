@@ -14,6 +14,7 @@ class Solucao(object):
         self.__numero_de_pontos = int(numero_de_pontos)
         self.__lista_de_pontos = lista_de_pontos
         self.__matriz_de_distancias = matriz_de_distancias
+        self.__solType = ""
 
     def __str__(self):
         for ponto in self.__pontos:
@@ -27,7 +28,7 @@ class Solucao(object):
             n2 = self.__pontos[i + 1].getNumero()
             # O - 1 é devido ao fato da lista começar em 0 , não em 1 , portanto o ponto 1 está na posição 0 , o ponto 2 na posição e por ai vai 
             distTotal += self.__matriz_de_distancias[n1 - 1][n2 - 1]
-        self.__distTotal = distTotal
+        self.__distTotal = round(distTotal,2)
 
 
     def encontrarSolucaoRandomica(self):
@@ -42,6 +43,7 @@ class Solucao(object):
             self.__pontos.append(self.__lista_de_pontos[index])
             self.__lista_de_pontos.pop(index)
         self.calcularDistTotal()
+        self.__solType = "Randomica"
 
 
     def encontrarPontoMaisProximo(self,size,index):
@@ -67,6 +69,7 @@ class Solucao(object):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
             self.encontrarPontoMaisProximo(size,-1)
         
+        self.__solType = "HVMP"
         self.calcularDistTotal()
 
     def encontrarSolucaoInsercaoMaisBarata(self):
@@ -100,6 +103,7 @@ class Solucao(object):
             self.__pontos.insert(after,self.__lista_de_pontos[where])
             self.__lista_de_pontos.pop(where)
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
+        self.__solType = "HIMB"
         self.calcularDistTotal()
 
 
@@ -183,7 +187,7 @@ class Solucao(object):
         ax.plot(x,y,marker = 'o',color='red')
 
         # Configura o titulo do gráfico
-        titulo = 'Solução para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
+        titulo = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo + '\nDistância Total k = ' + str(self.__distTotal)
         ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
 
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
@@ -195,7 +199,7 @@ class Solucao(object):
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
-        nome  = 'Solução para ' + nome_do_arquivo[:posFormat] + '.pdf'
+        nome  = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
         plt.savefig(nome,format = 'pdf')
         plt.show()
         return plt
