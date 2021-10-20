@@ -21,6 +21,12 @@ class Solucao(object):
             print("Ponto de numero:",ponto.getNumero()," com coordenadas: ",ponto.getX()," , ",ponto.getY())
         return "Com uma distancia total de " + str(self.__distTotal)
 
+    def getPontos(self):
+        for ponto in self.__pontos:
+            print(ponto.getNumero(),end="->")
+        print()
+        print(self.__distTotal)
+
     def calcularDistTotal(self):
         distTotal = 0
         for i in range(len(self.__pontos) - 1):
@@ -201,6 +207,6 @@ class Solucao(object):
         posFormat = nome_do_arquivo.find('.')
         nome  = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
         plt.savefig(nome,format = 'pdf')
-        plt.show()
+        # plt.show()
         return plt
 
