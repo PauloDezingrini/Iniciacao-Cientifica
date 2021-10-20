@@ -82,8 +82,11 @@ class Solucao(object):
         size = len(self.__lista_de_pontos)
         # Adição dps pontos iniciais a solução
         self.__pontos.append(self.__lista_de_pontos[0])
+        # print(self.__pontos[-1].getNumero(),end=",")
         self.encontrarPontoMaisProximo(size,-1)
+        # print(self.__pontos[-1].getNumero(),end=",")
         self.encontrarPontoMaisProximo(size,-1)
+        # print(self.__pontos[-1].getNumero(),end=",")
         # count representa o número de pontos ja adicionados a soluçao
         count = 3
         # Enquanto o número de pontos da solução for menor que a quantidade de pontos que a solução tem que ter(k)
@@ -107,6 +110,7 @@ class Solucao(object):
             # Insere na posição after o ponto que resultou na menor dist que está na posição where e então , por questões de eficiencia
             # Exclui esse ponto da lista
             self.__pontos.insert(after,self.__lista_de_pontos[where])
+            # print(self.__lista_de_pontos[where].getNumero(),end=",")
             self.__lista_de_pontos.pop(where)
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"

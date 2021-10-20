@@ -27,7 +27,7 @@ while True:
         solucao.encontrarSolucaoModelo()
     
     # print(solucao)
-    solucao.getPontos()
+    # solucao.getPontos()
     solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
