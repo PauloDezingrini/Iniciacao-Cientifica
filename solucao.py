@@ -23,7 +23,7 @@ class Solucao(object):
 
     def getPontos(self):
         for ponto in self.__pontos:
-            print(ponto.getNumero(),end="->")
+            print(ponto.getNumero(),end=",")
         print()
         print(self.__distTotal)
 
@@ -119,6 +119,7 @@ class Solucao(object):
 
 
     def encontrarSolucaoModelo(self):
+        self.__solType = "Modelo"
         # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
         size1 = set(range(len(self.__lista_de_pontos) -1))
         size2 = set(range(1,len(self.__lista_de_pontos)-1))
@@ -156,7 +157,7 @@ class Solucao(object):
         for j in size1:
             model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
 
-        model.optimize(max_seconds=3600)
+        model.optimize(max_seconds=5400)
         pontos_utilizados = []
         if model.num_solutions:
             self.__distTotal = model.objective_value
@@ -167,7 +168,6 @@ class Solucao(object):
                     if(x[posSaida][i].x >= 0.90 and i not in pontos_utilizados):
                         pontos_utilizados.append(i)
                         posSaida = i
-                        print(posSaida)
                         break
                 if(len(pontos_utilizados) == self.__numero_de_pontos):
                     break
