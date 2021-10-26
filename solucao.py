@@ -51,9 +51,10 @@ class Solucao(object):
         self.calcularDistTotal()
         self.__solType = "Randomica"
 
-
-    def encontrarPontoMaisProximo(self,size,index):
-    # Size é passado como paramentro simplesmente para evitar fazer a operaçao len(lista_de_pontos) repetidas vezes 
+    # Método que retorna a posição do ponto mais próximo a um ponto determinado na chamada da função(index) ou ao ultimo ponto soluçao se inder for -1
+    # Parametro extra lista é utilizado na heurística do vizinho mais próximo com escolhas aleátorias
+    def encontrarPontoMaisProximo(self,lista,size,index):
+        # Size é passado como paramentro simplesmente para evitar fazer a operaçao len(lista_de_pontos) repetidas vezes 
         posNovoPonto = 0
         # Representa o ponto de saída de determinado trecho da rota
         saiDe = self.__pontos[index].getNumero() - 1 
@@ -61,10 +62,10 @@ class Solucao(object):
         for i in range(size):
             if((self.__matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
                 # Somente escolhe como ponto mais proximo , pontos que não estejam na solução
-                if self.__lista_de_pontos[i] not in self.__pontos:
+                if self.__lista_de_pontos[i] not in self.__pontos and self.__lista_de_pontos[i] not in lista:
                     menorDist = self.__matriz_de_distancias[saiDe][i]
                     posNovoPonto = i
-        self.__pontos.append(self.__lista_de_pontos[posNovoPonto])
+        return posNovoPonto
 
     def encontrarSolucaoVizinhoProximo(self): 
         self.__pontos.append(self.__lista_de_pontos[0])
@@ -73,9 +74,29 @@ class Solucao(object):
         size = len(self.__lista_de_pontos)
         while(len(self.__pontos) < self.__numero_de_pontos):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
-            self.encontrarPontoMaisProximo(size,-1)
-        
+            pos = self.encontrarPontoMaisProximo(self.__pontos,size,-1)
+            self.__pontos.append(self.__lista_de_pontos[pos])
         self.__solType = "HVMP"
+        self.calcularDistTotal()
+
+    def encontrarSolucaoVMPA(self,percentual):
+        size = len(self.__lista_de_pontos)
+        # Quantidade de pontos mais proximos que será disponibilizado para escolha
+        m = int(round(max(1,percentual*size)))
+        # Inserção do ponto inicial
+        self.__pontos.append(self.__lista_de_pontos[0])
+        cont = 1
+        while(cont < self.__numero_de_pontos):
+            maisProximos = []
+            index = 0
+            while(index < m):
+                pos = self.encontrarPontoMaisProximo(maisProximos,size,-1)
+                maisProximos.append(self.__lista_de_pontos[pos])
+                index += 1
+            pos = random.randint(0,m-1)
+            self.__pontos.append(maisProximos[pos])
+            cont+=1
+        self.__solType = "HVMPA"
         self.calcularDistTotal()
 
     def encontrarSolucaoInsercaoMaisBarata(self):
@@ -116,8 +137,6 @@ class Solucao(object):
         self.__solType = "HIMB"
         self.calcularDistTotal()
 
-
-
     def encontrarSolucaoModelo(self):
         self.__solType = "Modelo"
         # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
@@ -157,7 +176,7 @@ class Solucao(object):
         for j in size1:
             model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
 
-        model.optimize(max_seconds=5400)
+        model.optimize(max_seconds=3600)
         pontos_utilizados = []
         if model.num_solutions:
             self.__distTotal = model.objective_value
