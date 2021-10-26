@@ -53,6 +53,8 @@ class TSPfile(object):
             self.__matriz = self.calcularDistanciasEuclidianas()
         elif self.__edge_type == "GEO\n" : 
             self.__matriz = self.calcularDistanciasGeograficas()
+        elif "ATT\n" in self.__edge_type:
+            self.__matriz = self.calcularDistanciasATT()
         file.close()
 
     #Caso a matriz seja fornecida , realiza a leitura e caso não seja uma matriz quadrada , a ajusta para fazer com que ela se torne uma
@@ -103,6 +105,27 @@ class TSPfile(object):
             matrizDeDistancias.append(linha)
         return matrizDeDistancias
     
+    def calcularDistanciasATT(self):
+        matrizDistancias = []
+        for i in range(len(self.__list)):
+            linha = []
+            for j in range(len(self.__list)):
+                if(i==j):
+                    linha.append(0)
+                else:
+                    ponto1 = self.__list[i]
+                    ponto2 = self.__list[j]
+                    xd = ponto1.getX() - ponto2.getX()
+                    yd = ponto1.getY() - ponto2.getY()
+                    r = sqrt((xd**2 + yd**2)/10)
+                    t = int(round(r))
+                    if(t<r): 
+                        linha.append(t + 1)
+                    else:
+                        linha.append(t)
+            matrizDistancias.append(linha)
+        return matrizDistancias
+
     def calcularDistanciasGeograficas(self):
         matrizDistancias = []
         RRR = 6378.388  
