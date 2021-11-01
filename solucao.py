@@ -27,8 +27,8 @@ class Solucao(object):
     def calcularDistTotal(self):
         distTotal = 0
         for i in range(len(self.__pontos) - 1):
-            n1 = self.__pontos[i].getNumero()
-            n2 = self.__pontos[i + 1].getNumero()
+            n1 = self.__pontos[i]
+            n2 = self.__pontos[i + 1]
             # O - 1 é devido ao fato da lista começar em 0 , não em 1 , portanto o ponto 1 está na posição 0 , o ponto 2 na posição e por ai vai 
             distTotal += self.__matriz_de_distancias[n1 - 1][n2 - 1]
         self.__distTotal = round(distTotal,2)
@@ -52,43 +52,42 @@ class Solucao(object):
     # Parametro extra lista é utilizado na heurística do vizinho mais próximo com escolhas aleátorias
     def encontrarPontoMaisProximo(self,lista,size,index):
         # Size é passado como paramentro simplesmente para evitar fazer a operaçao len(lista_de_pontos) repetidas vezes 
-        posNovoPonto = 0
         # Representa o ponto de saída de determinado trecho da rota
-        saiDe = self.__pontos[index].getNumero() - 1 
+        saiDe = self.__pontos[index] - 1 
         menorDist = 0
         for i in range(size):
             if((self.__matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
                 # Somente escolhe como ponto mais proximo , pontos que não estejam na solução
-                if self.__lista_de_pontos[i] not in self.__pontos and self.__lista_de_pontos[i] not in lista:
+                if (i+1) not in self.__pontos and (i+1) not in lista:
                     menorDist = self.__matriz_de_distancias[saiDe][i]
-                    posNovoPonto = i
-        return posNovoPonto
+                    novoPonto = i
+        return novoPonto
 
     def encontrarSolucaoVizinhoProximo(self): 
-        self.__pontos.append(self.__lista_de_pontos[0])
+        self.__pontos.append(1)
         # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
         # foi definido previamente
-        size = len(self.__lista_de_pontos)
+        size = len(self.__matriz_de_distancias[0])
         while(len(self.__pontos) < self.__numero_de_pontos):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
             pos = self.encontrarPontoMaisProximo(self.__pontos,size,-1)
-            self.__pontos.append(self.__lista_de_pontos[pos])
+            self.__pontos.append(pos+1)
         self.__solType = "HVMP"
         self.calcularDistTotal()
 
     def encontrarSolucaoVMPA(self,percentual):
-        size = len(self.__lista_de_pontos)
+        size = len(self.__matriz_de_distancias[0])
         # Quantidade de pontos mais proximos que será disponibilizado para escolha
         m = int(round(max(1,percentual*size)))
         # Inserção do ponto inicial
-        self.__pontos.append(self.__lista_de_pontos[0])
+        self.__pontos.append(1)
         cont = 1
         while(cont < self.__numero_de_pontos):
             maisProximos = []
             index = 0
             while(index < m):
                 pos = self.encontrarPontoMaisProximo(maisProximos,size,-1)
-                maisProximos.append(self.__lista_de_pontos[pos])
+                maisProximos.append(pos+1)
                 index += 1
             pos = random.randint(0,m-1)
             self.__pontos.append(maisProximos[pos])
@@ -137,8 +136,8 @@ class Solucao(object):
     def encontrarSolucaoModelo(self):
         self.__solType = "Modelo"
         # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
-        size1 = set(range(len(self.__lista_de_pontos) -1))
-        size2 = set(range(1,len(self.__lista_de_pontos)-1))
+        size1 = set(range(len(self.__matriz_de_distancias[0]) -1))
+        size2 = set(range(1,len(self.__matriz_de_distancias[0])-1))
 
         model = Model()
         x = [[model.add_var(var_type=BINARY) for j in size1] for i in size1]
@@ -188,7 +187,7 @@ class Solucao(object):
                 if(len(pontos_utilizados) == self.__numero_de_pontos):
                     break
             for i in range(self.__numero_de_pontos):
-                self.__pontos.append(self.__lista_de_pontos[pontos_utilizados[i]])
+                self.__pontos.append(pontos_utilizados[i] + 1)
 
     def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
         # Prepara os pontos pertencentes a solução para inserir no gráfico

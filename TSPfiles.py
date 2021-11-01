@@ -17,8 +17,8 @@ class TSPfile(object):
 
     def getMatriz(self):
         #Gera uma copia e retorna a copia
-        matriz = self.__matriz[:]
-        return matriz
+        # matriz = self.__matriz[:]
+        return self.__matriz
 
 
     def read(self):
@@ -32,6 +32,7 @@ class TSPfile(object):
                 self.__edge_type = str[18:]
             if "EDGE_WEIGHT_FORMAT" in str:
                 self.__edge_format = str[20:]
+                print(self.__edge_format)
             if lerCoord:
                 # Separa a linha a partir dos espaçoes e então remove os espaços vazios que restarem devido a espaços seguidos e strings "" que 
                 # estavam sobrando no array
@@ -49,6 +50,7 @@ class TSPfile(object):
         #A partir do edge weight type define qual será o método de leitura ou calculo da matriz de distâncias
         if(self.__edge_type=="EXPLICIT\n"):
             self.__matriz = self.lerMatriz()
+            # print(self.__matriz)
         elif "EUC_2D\n" in self.__edge_type or "EUC_3D\n" in self.__edge_type:
             self.__matriz = self.calcularDistanciasEuclidianas()
         elif self.__edge_type == "GEO\n" : 
@@ -64,7 +66,7 @@ class TSPfile(object):
         readDists = False
         while True:
             str = file.readline()
-            if (str == "NODE_COORD_SECTION\n" or str =="DISPLAY_DATA_SECTION\n"):
+            if (str == "NODE_COORD_SECTION\n" or str =="DISPLAY_DATA_SECTION\n" or "EOF" in str):
                 break
             if readDists:
                 aux = []
@@ -78,11 +80,16 @@ class TSPfile(object):
             if("EDGE_WEIGHT_SECTION" in str):
                 readDists = True
         file.close()
+        # print(matriz)
         if "FULL_MATRIX" not in self.__edge_format:
-            if "UPPER_ROW " in self.__edge_format or "LOWER_ROW" in str:
-                return ajustarMatriz(matriz,1)
-            else:
-                return ajustarMatriz(matriz,0)
+            if "UPPER_ROW " in self.__edge_format :
+                return ajustarMatrizUpper(matriz,1)
+            elif "UPPER_DIAG_ROW" in  self.__edge_format:
+                return ajustarMatrizUpper(matriz,0)
+            elif "LOWER_ROW" in self.__edge_format:
+                return ajustarMatrizLower(matriz,1)
+            elif "LOWER_DIAG_ROW" in self.__edge_format:
+                return ajustarMatrizLower(matriz,0)
         else:
             return matriz
     
@@ -157,15 +164,27 @@ def remove_values_from_list(the_list, val):
    return [value for value in the_list if value != val]
 
 # Dada uma matriz triangular superior ajusta a matriz transformando-a em uma matriz quadrada completa
-def ajustarMatriz(matriz,type):
+def ajustarMatrizUpper(matriz,type):
     size = set(range(len(matriz) + type))
     matriz2 = [[0 if i ==j else matriz[i][j-i-1] if j>i else matriz[j][i-j-1] for j in size] for i in size]
     return matriz2
 
-def ajustarMatriz2(matriz,type):
+def ajustarMatrizLower(matriz,type):
+    print(len(matriz))
     size = set(range(len(matriz) + type))
-    matriz2 = [[0 if i ==j else matriz[j-i-1][i] if j>i else matriz[i-j-1][j] for j in size] for i in size]
+    matriz2 = []
+    for linha in size:
+        linha_aux = []
+        for coluna in range(len(matriz[linha])):
+            if linha == coluna:
+                linha_aux.append(0)
+            elif coluna>linha:
+                linha_aux.append(matriz[coluna][linha])
+            else:
+                linha_aux.append(matriz[linha][coluna])
+            matriz2.append(linha_aux)
     return matriz2
+
 
 def calcularLatitudeLongitude(ponto):
     deg = round(ponto.getX())
