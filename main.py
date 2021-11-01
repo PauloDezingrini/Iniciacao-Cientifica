@@ -24,7 +24,7 @@ while True:
     elif MetodoResolucao == 3:
         solucao.encontrarSolucaoInsercaoMaisBarata()
     elif MetodoResolucao == 4:
-        solucao.encontrarSolucaoVMPA(0.1)
+        solucao.encontrarSolucaoVMPA(0.05)
     elif MetodoResolucao == 5:
         solucao.encontrarSolucaoModelo()
     

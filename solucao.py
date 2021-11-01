@@ -22,9 +22,6 @@ class Solucao(object):
         return "Com uma distancia total de " + str(self.__distTotal)
 
     def getPontos(self):
-        for ponto in self.__pontos:
-            print(ponto.getNumero(),end=",")
-        print()
         print(self.__distTotal)
 
     def calcularDistTotal(self):

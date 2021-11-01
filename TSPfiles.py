@@ -28,9 +28,9 @@ class TSPfile(object):
             str = file.readline()
             if str == "EOF" or str == "EOF\n":
                 break
-            if("EDGE_WEIGHT_TYPE:" in str):
+            if("EDGE_WEIGHT_TYPE" in str):
                 self.__edge_type = str[18:]
-            if "EDGE_WEIGHT_FORMAT:" in str:
+            if "EDGE_WEIGHT_FORMAT" in str:
                 self.__edge_format = str[20:]
             if lerCoord:
                 # Separa a linha a partir dos espaçoes e então remove os espaços vazios que restarem devido a espaços seguidos e strings "" que 
@@ -160,6 +160,11 @@ def remove_values_from_list(the_list, val):
 def ajustarMatriz(matriz,type):
     size = set(range(len(matriz) + type))
     matriz2 = [[0 if i ==j else matriz[i][j-i-1] if j>i else matriz[j][i-j-1] for j in size] for i in size]
+    return matriz2
+
+def ajustarMatriz2(matriz,type):
+    size = set(range(len(matriz) + type))
+    matriz2 = [[0 if i ==j else matriz[j-i-1][i] if j>i else matriz[i-j-1][j] for j in size] for i in size]
     return matriz2
 
 def calcularLatitudeLongitude(ponto):
