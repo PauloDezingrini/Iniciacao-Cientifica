@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from TSPfiles import TSPfile
+from TSPfile import TSPfile
 from solucao import *
 
 
@@ -30,7 +30,7 @@ while True:
     
     # print(solucao)
     solucao.getPontos()
-    # solucao.plotarSolucao(arquivo_a_ser_lido,lista_de_pontos)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 

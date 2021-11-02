@@ -189,18 +189,22 @@ class Solucao(object):
             for i in range(self.__numero_de_pontos):
                 self.__pontos.append(pontos_utilizados[i] + 1)
 
-    def plotarSolucao(self,nome_do_arquivo,lista_de_pontos):
+    def plotarSolucao(self,nome_do_arquivo):
+
+        solution = []
+        for i in self.__pontos:
+            solution.append(self.__lista_de_pontos[i-1])
         # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
         y = []
-        for ponto in self.__pontos:
+        for ponto in solution:
             x.append(ponto.getX())
             y.append(ponto.getY())
         # Prepara os demais pontos para inserir no gráfico
 
         x1 = []
         y1 = []
-        for ponto in lista_de_pontos:
+        for ponto in self.__lista_de_pontos:
             x1.append(ponto.getX())
             y1.append(ponto.getY())
         
@@ -216,7 +220,7 @@ class Solucao(object):
         ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
 
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
-        for ponto in self.__pontos:
+        for ponto in solution:
             if ponto.getNumero() == 1:
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
             else : 
@@ -225,7 +229,7 @@ class Solucao(object):
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
         nome  = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
-        plt.savefig(nome,format = 'pdf')
-        # plt.show()
+        # plt.savefig(nome,format = 'pdf')
+        plt.show()
         return plt
 
