@@ -68,10 +68,12 @@ class Solucao(object):
         # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
         # foi definido previamente
         size = len(self.__matriz_de_distancias[0])
-        while(len(self.__pontos) < self.__numero_de_pontos):
+        cont = 1
+        while(cont < self.__numero_de_pontos):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
             pos = self.encontrarPontoMaisProximo(self.__pontos,size,-1)
             self.__pontos.append(pos+1)
+            cont += 1
         self.__solType = "HVMP"
         self.calcularDistTotal()
 

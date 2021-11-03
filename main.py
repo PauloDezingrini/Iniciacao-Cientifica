@@ -24,7 +24,15 @@ while True:
     elif MetodoResolucao == 3:
         solucao.encontrarSolucaoInsercaoMaisBarata()
     elif MetodoResolucao == 4:
-        solucao.encontrarSolucaoVMPA(0.05)
+        dimension = file.getDimension()
+        if dimension >= 200:
+            solucao.encontrarSolucaoVMPA(0.01)
+        elif dimension >= 30:
+            solucao.encontrarSolucaoVMPA(0.05)
+        elif dimension >= 15:
+            solucao.encontrarSolucaoVMPA(0.1)
+        else:
+            solucao.encontrarSolucaoVMPA(0.15)
     elif MetodoResolucao == 5:
         solucao.encontrarSolucaoModelo()
     

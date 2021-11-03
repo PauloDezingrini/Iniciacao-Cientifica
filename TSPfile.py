@@ -18,8 +18,10 @@ class TSPfile(object):
 
     def getMatriz(self):
         matrix = self.__matriz[:]
-        print(matrix)
         return matrix
+
+    def getDimension(self):
+        return self.__dimension
 
     # Função de leitura principal
     def read(self):
@@ -99,7 +101,7 @@ class TSPfile(object):
         if "UPPER_ROW" in self.__edge_format:
             matrix = ajustarMatrizUpper(matrix,1)
         elif "UPPER_DIAG_ROW" in self.__edge_format:
-            matrix = ajustarMatrizUpper(matrix,0)
+            matrix = ajustarMatrizUpper2(matrix,0)
         return matrix
 
     def readMatrixLower(self,file,index):
@@ -211,6 +213,22 @@ def ajustarMatrizUpper(matriz,type):
     size = set(range(len(matriz) + type))
     matriz2 = [[0 if i ==j else matriz[i][j-i-1] if j>i else matriz[j][i-j-1] for j in size] for i in size]
     return matriz2
+
+def ajustarMatrizUpper2(matrix,type):
+    matrix2 = []
+    size = range(len(matrix) + type)
+    for linha in size:
+        line = []
+        for coluna in size:
+            # print("Linha: ",linha," - Coluna: ",coluna)
+            if linha == coluna:
+                line.append(0)
+            elif linha > coluna:
+                line.append(matrix[coluna][linha - coluna])
+            else:
+                line.append(matrix[linha][coluna - linha])
+        matrix2.append(line)
+    return matrix2
 
 def ajustarMatrizLower(matrix,type):
     matrix2 = []
