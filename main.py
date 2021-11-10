@@ -14,7 +14,7 @@ while True:
 
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
-    solucao = Solucao(numero_de_pontos,lista_de_pontos,matrizDistancias)
+    solucao = Solucao(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
     MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata,4-VMPA ,5-Modelo : "))
     if MetodoResolucao == 1:
@@ -39,7 +39,7 @@ while True:
     
     # print(solucao)
     solucao.getPontos()
-    # solucao.plotarSolucao(arquivo_a_ser_lido)
+    solucao.plotarSolucao(arquivo_a_ser_lido)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 

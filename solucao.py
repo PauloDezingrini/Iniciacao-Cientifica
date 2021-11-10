@@ -8,13 +8,14 @@ import matplotlib.pyplot as plt
 from mip import Model, xsum, minimize, BINARY
 
 class Solucao(object):
-    def __init__(self,numero_de_pontos,lista_de_pontos,matriz_de_distancias):
+    def __init__(self,numero_de_pontos,lista_de_pontos,matriz_de_distancias,dimension):
         self.__pontos = []
         self.__distTotal = 0
         self.__numero_de_pontos = int(numero_de_pontos)
         self.__lista_de_pontos = lista_de_pontos
         self.__matriz_de_distancias = matriz_de_distancias
         self.__solType = ""
+        self.__dimension = dimension
 
     def __str__(self):
         for ponto in self.__pontos:
@@ -53,12 +54,12 @@ class Solucao(object):
 
     # Método que retorna a posição do ponto mais próximo a um ponto determinado na chamada da função(index) ou ao ultimo ponto soluçao se inder for -1
     # Parametro extra lista é utilizado na heurística do vizinho mais próximo com escolhas aleátorias
-    def encontrarPontoMaisProximo(self,lista,size,index):
+    def encontrarPontoMaisProximo(self,lista,index):
         # Size é passado como paramentro simplesmente para evitar fazer a operaçao len(lista_de_pontos) repetidas vezes 
         # Representa o ponto de saída de determinado trecho da rota
         saiDe = self.__pontos[index] - 1 
         menorDist = 0
-        for i in range(size):
+        for i in range(self.__dimension):
             if((self.__matriz_de_distancias[saiDe][i]<=menorDist) or (menorDist==0)):
                 # Somente escolhe como ponto mais proximo , pontos que não estejam na solução
                 if (i+1) not in self.__pontos and (i+1) not in lista:
@@ -70,20 +71,18 @@ class Solucao(object):
         self.__pontos.append(1)
         # A matriz_de_distancias possui dimensão size X size , como precisamos percorrer linhas/colunas da matriz o valor size já
         # foi definido previamente
-        size = len(self.__matriz_de_distancias[0])
         cont = 1
         while(cont < self.__numero_de_pontos):
             # Como queremos encontrar o ponto mais proximo do ultimo inserido no array , basta passar -1 como ultimo paramentro
-            pos = self.encontrarPontoMaisProximo(self.__pontos,size,-1)
+            pos = self.encontrarPontoMaisProximo(self.__pontos,-1)
             self.__pontos.append(pos+1)
             cont += 1
         self.__solType = "HVMP"
         self.calcularDistTotal()
 
     def encontrarSolucaoVMPA(self,percentual):
-        size = len(self.__matriz_de_distancias[0])
         # Quantidade de pontos mais proximos que será disponibilizado para escolha
-        m = int(round(max(1,percentual*size)))
+        m = int(round(max(1,percentual*self.__dimension)))
         # Inserção do ponto inicial
         self.__pontos.append(1)
         cont = 1
@@ -91,7 +90,7 @@ class Solucao(object):
             maisProximos = []
             index = 0
             while(index < m):
-                pos = self.encontrarPontoMaisProximo(maisProximos,size,-1)
+                pos = self.encontrarPontoMaisProximo(maisProximos,-1)
                 maisProximos.append(pos+1)
                 index += 1
             pos = random.randint(0,m-1)
@@ -101,29 +100,26 @@ class Solucao(object):
         self.calcularDistTotal()
 
     def encontrarSolucaoInsercaoMaisBarata(self):
-        size = len(self.__lista_de_pontos)
+        lista = self.__lista_de_pontos[:]
         # Adição dps pontos iniciais a solução
-        self.__pontos.append(self.__lista_de_pontos[0])
-        # print(self.__pontos[-1].getNumero(),end=",")
-        self.encontrarPontoMaisProximo(size,-1)
-        # print(self.__pontos[-1].getNumero(),end=",")
-        self.encontrarPontoMaisProximo(size,-1)
-        # print(self.__pontos[-1].getNumero(),end=",")
+        self.__pontos.append(1)
+        self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1))
+        self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1))
         # count representa o número de pontos ja adicionados a soluçao
         count = 3
         # Enquanto o número de pontos da solução for menor que a quantidade de pontos que a solução tem que ter(k)
         while(count < self.__numero_de_pontos):
             menorDist = -1
             for i in range(count): # Percorre a solução
-                for j in range(len(self.__lista_de_pontos)): # Percorre a lista de pontos
-                    if self.__lista_de_pontos[j] not in self.__pontos: # Garante que o ponto j não está na solução
-                        indexJ = self.__lista_de_pontos[j].getNumero() - 1
+                for j in range(len(lista)): # Percorre a lista de pontos
+                    if lista[j] not in self.__pontos: # Garante que o ponto j não está na solução
+                        indexJ = lista[j].getNumero() - 1
                         if i == count - 1:
                             # O indice do ponto é pego dessa maneira , pq queremos o indice do ponto na matriz e como está sendo deletado
                             # da lista de ponto , os pontos utilizados os indices podem não corresponder
-                            dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ]
+                            dist = self.__matriz_de_distancias[self.__pontos[i] - 1][indexJ]
                         else:
-                            dist = self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i + 1].getNumero() - 1] - self.__matriz_de_distancias[self.__pontos[i].getNumero() - 1][self.__pontos[i+1].getNumero() - 1]
+                            dist = self.__matriz_de_distancias[self.__pontos[i] - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i + 1] - 1] - self.__matriz_de_distancias[self.__pontos[i] - 1][self.__pontos[i+1] - 1]
                         if dist < menorDist or menorDist==-1:
                             menorDist = dist
                             after  = i + 1
@@ -131,9 +127,9 @@ class Solucao(object):
             count += 1
             # Insere na posição after o ponto que resultou na menor dist que está na posição where e então , por questões de eficiencia
             # Exclui esse ponto da lista
-            self.__pontos.insert(after,self.__lista_de_pontos[where])
+            self.__pontos.insert(after,lista[where].getNumero())
             # print(self.__lista_de_pontos[where].getNumero(),end=",")
-            self.__lista_de_pontos.pop(where)
+            lista.pop(where)
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"
         self.calcularDistTotal()
