@@ -101,8 +101,8 @@ class Solucao(object):
 
     def encontrarSolucaoInsercaoMaisBarata(self):
         lista = []
-        for ponto in self.__lista_de_pontos:
-            lista.append(ponto.getNumero())
+        for i in range(self.__dimension):
+            lista.append(i + 1)
         # Adição dps pontos iniciais a solução
         self.__pontos.append(1)
         lista.pop(0)
