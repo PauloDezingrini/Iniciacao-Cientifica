@@ -231,6 +231,11 @@ class Solucao(object):
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
             else : 
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'medium')
+        # for ponto in self.__lista_de_pontos:
+        #     if ponto.getNumero() == 1:
+        #         plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
+        #     else : 
+        #         plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'medium')
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
