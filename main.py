@@ -33,13 +33,13 @@ while True:
         #     solucao.encontrarSolucaoVMPA(0.1)
         # else:
         #     solucao.encontrarSolucaoVMPA(0.15)
-        solucao.encontrarSolucaoVMPA(0.2)
+        solucao.encontrarSolucaoVMPA(0.01)
     elif MetodoResolucao == 5:
         solucao.encontrarSolucaoModelo()
     
     # print(solucao)
     solucao.getPontos()
-    # solucao.plotarSolucao(arquivo_a_ser_lido)
+    solucao.plotarSolucao(arquivo_a_ser_lido)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 
