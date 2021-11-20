@@ -24,22 +24,13 @@ while True:
     elif MetodoResolucao == 3:
         solucao.encontrarSolucaoInsercaoMaisBarata()
     elif MetodoResolucao == 4:
-        # dimension = file.getDimension()
-        # if dimension >= 200:
-        #     solucao.encontrarSolucaoVMPA(0.01)
-        # elif dimension >= 30:
-        #     solucao.encontrarSolucaoVMPA(0.05)
-        # elif dimension >= 15:
-        #     solucao.encontrarSolucaoVMPA(0.1)
-        # else:
-        #     solucao.encontrarSolucaoVMPA(0.15)
-        solucao.encontrarSolucaoVMPA(0.01)
+        solucao.encontrarSolucaoVMPA()
     elif MetodoResolucao == 5:
         solucao.encontrarSolucaoModelo()
     
     # print(solucao)
     solucao.getPontos()
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
 
     continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 

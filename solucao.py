@@ -80,20 +80,18 @@ class Solucao(object):
         self.__solType = "HVMP"
         self.calcularDistTotal()
 
-    def encontrarSolucaoVMPA(self,percentual):
-        # Quantidade de pontos mais proximos que será disponibilizado para escolha
-        m = int(round(max(1,percentual*self.__dimension)))
+    def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
         self.__pontos.append(1)
         cont = 1
         while(cont < self.__numero_de_pontos):
             maisProximos = []
             index = 0
-            while(index < m):
+            while(index < 3):
                 pos = self.encontrarPontoMaisProximo(maisProximos,-1)
                 maisProximos.append(pos+1)
                 index += 1
-            pos = random.randint(0,m-1)
+            pos = random.randint(0,2)
             self.__pontos.append(maisProximos[pos])
             cont+=1
         self.__solType = "HVMPA"
