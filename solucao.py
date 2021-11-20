@@ -110,6 +110,7 @@ class Solucao(object):
         lista = remove_values_from_list(lista,self.__pontos[-1])
         self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
         lista = remove_values_from_list(lista,self.__pontos[-1])
+        # self.plotarSolucao("ch150")
         # count representa o número de pontos ja adicionados a soluçao
         count = 3
         # Enquanto o número de pontos da solução for menor que a quantidade de pontos que a solução tem que ter(k)
@@ -133,7 +134,8 @@ class Solucao(object):
             # Insere na posição after o ponto que resultou na menor dist que está na posição where e então , por questões de eficiencia
             # Exclui esse ponto da lista
             self.__pontos.insert(after,lista[where])
-            # print(self.__lista_de_pontos[where].getNumero(),end=",")
+            # print(lista[where],end=",")
+            # self.plotarSolucao("ch150")
             lista.pop(where)
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"
@@ -226,16 +228,14 @@ class Solucao(object):
         ax.set(title = titulo,xlabel = "Coordenadas x",ylabel = "Coordenadas y")
 
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
+        for ponto in self.__lista_de_pontos:
+            if ponto not in solution:
+                plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'small')
         for ponto in solution:
             if ponto.getNumero() == 1:
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
             else : 
                 plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'medium')
-        # for ponto in self.__lista_de_pontos:
-        #     if ponto.getNumero() == 1:
-        #         plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'large')
-        #     else : 
-        #         plt.text(ponto.getX(),ponto.getY(),str(ponto.getNumero()),fontsize = 'medium')
 
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
