@@ -253,6 +253,18 @@ class Solucao(object):
                 neighborhood.append(s)
         return neighborhood
 
-        
+    def vizinhançaPorInsercao(self):
+        neighborhood = []
+        for i in range(1,len(self.__pontos)):
+            for j in range(1,len(self.__pontos)):
+                if j != i - 1 and j != i:
+                    s = self.__pontos[:]
+                    valueToInsert = s[i]
+                    s.pop(i)
+                    s.insert(j,valueToInsert)
+                    neighborhood.append(s)
+        print(len(neighborhood))
+
+
 def remove_values_from_list(the_list, val):
    return [value for value in the_list if value != val]
