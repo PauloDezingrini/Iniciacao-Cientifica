@@ -28,14 +28,14 @@ class Solucao(object):
     def getPontos(self):
         print(self.__distTotal)
 
-    def calcularDistTotal(self):
+    def calcularDistTotal(self,solution):
         distTotal = 0
-        for i in range(len(self.__pontos) - 1):
-            n1 = self.__pontos[i]
-            n2 = self.__pontos[i + 1]
+        for i in range(len(solution) - 1):
+            n1 = solution[i]
+            n2 = solution[i + 1]
             # O - 1 é devido ao fato da lista começar em 0 , não em 1 , portanto o ponto 1 está na posição 0 , o ponto 2 na posição e por ai vai 
             distTotal += self.__matriz_de_distancias[n1 - 1][n2 - 1]
-        self.__distTotal = round(distTotal,2)
+        return round(distTotal,2)
 
 
     def encontrarSolucaoRandomica(self):
@@ -49,7 +49,7 @@ class Solucao(object):
             index = random.randint(0,len(self.__lista_de_pontos)-1)
             self.__pontos.append(self.__lista_de_pontos[index])
             self.__lista_de_pontos.pop(index)
-        self.calcularDistTotal()
+        self.__distTotal = self.calcularDistTotal(self.__pontos)
         self.__solType = "Randomica"
 
     # Método que retorna a posição do ponto mais próximo a um ponto determinado na chamada da função(index) ou ao ultimo ponto soluçao se inder for -1
@@ -78,7 +78,7 @@ class Solucao(object):
             self.__pontos.append(pos+1)
             cont += 1
         self.__solType = "HVMP"
-        self.calcularDistTotal()
+        self.__distTotal = self.calcularDistTotal(self.__pontos)
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
@@ -95,7 +95,7 @@ class Solucao(object):
             self.__pontos.append(maisProximos[pos])
             cont+=1
         self.__solType = "HVMPA"
-        self.calcularDistTotal()
+        self.__distTotal = self.calcularDistTotal(self.__pontos)
 
     def encontrarSolucaoInsercaoMaisBarata(self):
         lista = []
@@ -137,7 +137,7 @@ class Solucao(object):
             lista.pop(where)
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"
-        self.calcularDistTotal()
+        self.__distTotal = self.calcularDistTotal(self.__pontos)
 
     def encontrarSolucaoModelo(self):
         self.__solType = "Modelo"
@@ -263,7 +263,17 @@ class Solucao(object):
                     s.pop(i)
                     s.insert(j,valueToInsert)
                     neighborhood.append(s)
-        print(len(neighborhood))
+        return neighborhood
+
+    def vizinhança2_OPT(self):
+        neighborhood = []
+        for i in range(1,len(self.__pontos)):
+            for j in range(len(self.__pontos)-1,-1,-1):
+                if j>i:
+                    s = self.__pontos[:]
+                    s[i:j+1] = reversed(s[i:j+1])
+                    neighborhood.append(s)
+        return neighborhood
 
 
 def remove_values_from_list(the_list, val):
