@@ -79,7 +79,7 @@ class Solucao(object):
             cont += 1
         self.__solType = "HVMP"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
-        self.busca_local_insercao()
+        self.busca_local_2OPT()
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
@@ -243,39 +243,6 @@ class Solucao(object):
         plt.show()
         return plt
 
-    def vizinhançaPorTroca(self):
-        neighborhood = []
-        for i in range(1,len(self.__pontos)-1):
-            for j in range(i+1,len(self.__pontos)):
-                s = self.__pontos[:]
-                i_valor = s[i]
-                s[i] = s[j]
-                s[j] = i_valor
-                neighborhood.append(s)
-        return neighborhood
-
-    def vizinhançaPorInsercao(self):
-        neighborhood = []
-        for i in range(1,len(self.__pontos)):
-            for j in range(1,len(self.__pontos)):
-                if j != i - 1 and j != i:
-                    s = self.__pontos[:]
-                    valueToInsert = s[i]
-                    s.pop(i)
-                    s.insert(j,valueToInsert)
-                    neighborhood.append(s)
-        return neighborhood
-
-    def vizinhança2_OPT(self):
-        neighborhood = []
-        for i in range(1,len(self.__pontos)):
-            for j in range(len(self.__pontos)-1,-1,-1):
-                if j>i:
-                    s = self.__pontos[:]
-                    s[i:j+1] = reversed(s[i:j+1])
-                    neighborhood.append(s)
-        return neighborhood
-
     def busca_local_troca(self):
         cont = True
         while cont :
@@ -303,6 +270,21 @@ class Solucao(object):
                         valueToInsert = s[i]
                         s.pop(i)
                         s.insert(j,valueToInsert)
+                        dist = self.calcularDistTotal(s)
+                        if dist < self.__distTotal:
+                            self.__pontos = s
+                            self.__distTotal = dist
+                            cont = True
+    
+    def busca_local_2OPT(self):
+        cont = True
+        while cont :
+            cont = False
+            for i in range(1,len(self.__pontos)):
+                for j in range(len(self.__pontos)-1,-1,-1):
+                    if j>i:
+                        s = self.__pontos[:]
+                        s[i:j+1] = reversed(s[i:j+1])
                         dist = self.calcularDistTotal(s)
                         if dist < self.__distTotal:
                             self.__pontos = s
