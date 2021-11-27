@@ -79,6 +79,7 @@ class Solucao(object):
             cont += 1
         self.__solType = "HVMP"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
+        # self.busca_local_troca()
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
@@ -275,6 +276,21 @@ class Solucao(object):
                     neighborhood.append(s)
         return neighborhood
 
+    def busca_local_troca(self):
+        cont = True
+        while cont :
+            cont = False
+            for i in range(1,len(self.__pontos)-1):
+                for j in range(i+1,len(self.__pontos)):
+                    s = self.__pontos[:]
+                    i_valor = s[i]
+                    s[i] = s[j]
+                    s[j] = i_valor
+                    dist = self.calcularDistTotal(s)
+                    if dist < self.__distTotal:
+                        self.__pontos = s
+                        self.__distTotal = dist
+                        cont = True
 
 def remove_values_from_list(the_list, val):
    return [value for value in the_list if value != val]
