@@ -79,7 +79,7 @@ class Solucao(object):
             cont += 1
         self.__solType = "HVMP"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
-        self.busca_local_2OPT()
+        self.busca_local_troca()
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
@@ -239,7 +239,7 @@ class Solucao(object):
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
         nome  = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
-        plt.savefig(nome,format = 'pdf')
+        # plt.savefig(nome,format = 'pdf')
         plt.show()
         return plt
 
