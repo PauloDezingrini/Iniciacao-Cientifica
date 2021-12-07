@@ -79,7 +79,7 @@ class Solucao(object):
             cont += 1
         self.__solType = "HVMP"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
-        self.busca_local_insercao()
+        self.busca_local_2OPT()
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
