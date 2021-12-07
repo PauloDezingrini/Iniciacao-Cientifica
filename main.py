@@ -16,23 +16,23 @@ while True:
 
     solucao = Solucao(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
-    MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata,4-VMPA ,5-Modelo : "))
-    if MetodoResolucao == 1:
-        solucao.encontrarSolucaoRandomica()
-    elif MetodoResolucao == 2:
-        solucao.encontrarSolucaoVizinhoProximo()
-    elif MetodoResolucao == 3:
-        solucao.encontrarSolucaoInsercaoMaisBarata()
-    elif MetodoResolucao == 4:
-        solucao.encontrarSolucaoVMPA()
-    elif MetodoResolucao == 5:
-        solucao.encontrarSolucaoModelo()
+    # MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata,4-VMPA ,5-Modelo : "))
+    # if MetodoResolucao == 1:
+    #     solucao.encontrarSolucaoRandomica()
+    # elif MetodoResolucao == 2:
+    solucao.encontrarSolucaoVizinhoProximo()
+    # elif MetodoResolucao == 3:
+    #     solucao.encontrarSolucaoInsercaoMaisBarata()
+    # elif MetodoResolucao == 4:
+    #     solucao.encontrarSolucaoVMPA()
+    # elif MetodoResolucao == 5:
+    #     solucao.encontrarSolucaoModelo()
     
     # print(solucao)
     solucao.getPontos()
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
 
-    continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
+    # continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 
-    if continuar == 'N':
-        break
+    # if continuar == 'N':
+    #     break
