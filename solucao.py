@@ -239,7 +239,7 @@ class Solucao(object):
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
         nome  = 'Solução da '+ self.__solType + ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
-        # plt.savefig(nome,format = 'pdf')
+        plt.savefig(nome,format = 'pdf')
         plt.show()
         return plt
 

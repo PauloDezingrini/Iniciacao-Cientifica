@@ -30,7 +30,7 @@ while True:
     
     # print(solucao)
     solucao.getPontos()
-    # solucao.plotarSolucao(arquivo_a_ser_lido)
+    solucao.plotarSolucao(arquivo_a_ser_lido)
 
     # continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 
