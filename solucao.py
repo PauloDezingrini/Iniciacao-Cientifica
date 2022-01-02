@@ -79,7 +79,7 @@ class Solucao(object):
             cont += 1
         self.__solType = "HVMP"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
-        self.busca_local_2OPT()
+        # self.busca_local_2OPT()
 
     def encontrarSolucaoVMPA(self):
         # Inserção do ponto inicial
@@ -102,16 +102,18 @@ class Solucao(object):
         lista = []
         for i in range(self.__dimension):
             lista.append(i + 1)
-        # Adição dps pontos iniciais a solução
-        self.__pontos.append(1)
-        lista.pop(0)
-        self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
-        lista = remove_values_from_list(lista,self.__pontos[-1])
-        self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
-        lista = remove_values_from_list(lista,self.__pontos[-1])
-        # self.plotarSolucao("ch150")
+        # Adição dps pontos iniciais a solução se o array está vazio
+        if self.__pontos == []:
+            self.__pontos.append(1)
+            lista.pop(0)
+            self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
+            lista = remove_values_from_list(lista,self.__pontos[-1])
+            self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
+            lista = remove_values_from_list(lista,self.__pontos[-1])
+            count = 3
+        else:
+            count = len(self.__pontos)
         # count representa o número de pontos ja adicionados a soluçao
-        count = 3
         # Enquanto o número de pontos da solução for menor que a quantidade de pontos que a solução tem que ter(k)
         while(count < self.__numero_de_pontos):
             menorDist = -1
@@ -124,7 +126,7 @@ class Solucao(object):
                             # da lista de ponto , os pontos utilizados os indices podem não corresponder
                             dist = self.__matriz_de_distancias[self.__pontos[i] - 1][indexJ]
                         else:
-                            dist = self.__matriz_de_distancias[self.__pontos[i] - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i + 1] - 1] - self.__matriz_de_distancias[self.__pontos[i] - 1][self.__pontos[i+1] - 1]
+                            dist = self.__matriz_de_distancias[self.__pontos[i] - 1][indexJ] + self.__matriz_de_distancias[indexJ][self.__pontos[i+1] - 1] - self.__matriz_de_distancias[self.__pontos[i] - 1][self.__pontos[i+1] - 1]
                         if dist < menorDist or menorDist==-1:
                             menorDist = dist
                             after  = i + 1
@@ -139,6 +141,21 @@ class Solucao(object):
             # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"
         self.__distTotal = self.calcularDistTotal(self.__pontos)
+
+    def HVMPplusHIMB(self):
+        self.encontrarSolucaoVizinhoProximo()
+        maiorDist = 0
+        maiorIndex = 0
+        # Define a maior distancia entre os pontos da solução
+        length = self.__numero_de_pontos - 1
+        for i in range(length):
+            dist = self.__matriz_de_distancias[self.__pontos[i]-1][self.__pontos[i+1]-1]
+            if( dist > maiorDist):
+                maiorDist = dist
+                maiorIndex = i
+        # Redefine a solução de tal forma que todos os pontos a partir da maior distancia são excluidos dela
+        self.__pontos = self.__pontos[:maiorIndex]
+        self.encontrarSolucaoInsercaoMaisBarata()
 
     def encontrarSolucaoModelo(self):
         self.__solType = "Modelo"

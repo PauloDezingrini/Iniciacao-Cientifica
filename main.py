@@ -20,13 +20,14 @@ while True:
     # if MetodoResolucao == 1:
     #     solucao.encontrarSolucaoRandomica()
     # elif MetodoResolucao == 2:
-    solucao.encontrarSolucaoVizinhoProximo()
+    # solucao.encontrarSolucaoVizinhoProximo()
     # elif MetodoResolucao == 3:
-    #     solucao.encontrarSolucaoInsercaoMaisBarata()
+    # solucao.encontrarSolucaoInsercaoMaisBarata()
     # elif MetodoResolucao == 4:
     #     solucao.encontrarSolucaoVMPA()
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
+    solucao.encontrarSolucaoInsercaoMaisBarata()
     
     # print(solucao)
     solucao.getPontos()
