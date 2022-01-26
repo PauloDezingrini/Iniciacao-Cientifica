@@ -28,10 +28,10 @@ while True:
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
     solucao.encontrarSolucaoInsercaoMaisBarata()
-    
+    solucao.busca_local_2OPT()
     # print(solucao)
     solucao.getPontos()
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
 
     # continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
 
