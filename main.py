@@ -27,10 +27,10 @@ while True:
     #     solucao.encontrarSolucaoVMPA()
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
-    solucao.HVMPplusHIMB()
-    solucao.busca_local_troca()
+    solucao.encontrarSolucaoInsercaoMaisBarata()
+    # solucao.busca_local_troca()
     # print(solucao)
-    solucao.getPontos()
+    solucao.printDist()
     # solucao.plotarSolucao(arquivo_a_ser_lido)
 
     # continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )

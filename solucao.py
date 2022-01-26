@@ -1,3 +1,4 @@
+from html.entities import name2codepoint
 from os import pipe
 from typing import Counter, Sized
 from ponto import *
@@ -25,8 +26,14 @@ class Solucao(object):
     def getDist(self):
         return(self.__distTotal)
 
-    def getPontos(self):
+    def printDist(self):
         print(self.__distTotal)
+
+    def printDists(self):
+        for i in range(len(self.__pontos) - 1):
+            n1 = self.__pontos[i] - 1
+            n2 = self.__pontos[i + 1] - 1
+            print(self.__matriz_de_distancias[n1][n2],end="->")
 
     def calcularDistTotal(self,solution):
         distTotal = 0
@@ -106,11 +113,8 @@ class Solucao(object):
         if self.__pontos == []:
             self.__pontos.append(1)
             lista.pop(0)
-            self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
-            lista = remove_values_from_list(lista,self.__pontos[-1])
-            self.__pontos.append(self.encontrarPontoMaisProximo(self.__pontos,-1) + 1)
-            lista = remove_values_from_list(lista,self.__pontos[-1])
-            count = 3
+            self.__distTotal = 0
+            count = 1
         else:
             count = len(self.__pontos)
         # count representa o número de pontos ja adicionados a soluçao
@@ -135,12 +139,9 @@ class Solucao(object):
             # Insere na posição after o ponto que resultou na menor dist que está na posição where e então , por questões de eficiencia
             # Exclui esse ponto da lista
             self.__pontos.insert(after,lista[where])
-            # print(lista[where],end=",")
-            # self.plotarSolucao("ch150")
+            self.__distTotal+=menorDist
             lista.pop(where)
-            # A distância não é atualizada pq o método calcularDistTotal() já realiza este papel
         self.__solType = "HIMB"
-        self.__distTotal = self.calcularDistTotal(self.__pontos)
 
     def HVMPplusHIMB(self):
         self.encontrarSolucaoVizinhoProximo()
