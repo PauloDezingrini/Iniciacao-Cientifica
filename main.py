@@ -29,7 +29,7 @@ while True:
     #     solucao.encontrarSolucaoModelo()
     # solucao.encontrarSolucaoInsercaoMaisBarata()
     solucao.HVMPplusHIMB()
-    solucao.busca_local_insercao()
+    solucao.busca_local_2OPT()
     # print(solucao)
     solucao.printDist()
     # solucao.plotarSolucao(arquivo_a_ser_lido)
