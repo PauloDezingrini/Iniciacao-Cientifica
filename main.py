@@ -27,9 +27,10 @@ while True:
     #     solucao.encontrarSolucaoVMPA()
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
-    solucao.encontrarSolucaoInsercaoMaisBarata()
+    solucao.encontrarSolucaoVizinhoProximo()
     # solucao.HVMPplusHIMB()
-    solucao.busca_local_troca()
+    solucao.busca_local_2OPT()
+    solucao.busca_local_insercao()
     # print(solucao)
     solucao.printDist()
     # solucao.plotarSolucao(arquivo_a_ser_lido)
