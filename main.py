@@ -27,7 +27,7 @@ while True:
     #     solucao.encontrarSolucaoVMPA()
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
-    solucao.encontrarSolucaoVizinhoProximo()
+    solucao.encontrarSolucaoInsercaoMaisBarata()
     # solucao.HVMPplusHIMB()
     solucao.busca_local_2OPT()
     solucao.busca_local_insercao()
