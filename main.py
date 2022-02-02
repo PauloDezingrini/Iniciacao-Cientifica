@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from TSPfile import TSPfile
-from newSolution import *
+from solution import *
 
 
 while True:
