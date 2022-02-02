@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from TSPfile import TSPfile
-from solucao import *
+from newSolution import *
 
 
 while True:
@@ -14,7 +14,7 @@ while True:
 
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
-    solucao = Solucao(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
+    solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
     # MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata,4-VMPA ,5-Modelo : "))
     # if MetodoResolucao == 1:
@@ -27,10 +27,9 @@ while True:
     #     solucao.encontrarSolucaoVMPA()
     # elif MetodoResolucao == 5:
     #     solucao.encontrarSolucaoModelo()
-    solucao.encontrarSolucaoInsercaoMaisBarata()
-    # solucao.HVMPplusHIMB()
-    solucao.busca_local_2OPT()
-    solucao.busca_local_insercao()
+    # solucao.encontrarSolucaoInsercaoMaisBarata()
+    # solucao.findSolutionHVMP()
+    solucao.findSolutionHIMB()
     # print(solucao)
     solucao.printDist()
     # solucao.plotarSolucao(arquivo_a_ser_lido)
