@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
+import imp
 from TSPfile import TSPfile
 from solution import *
+from pathlib import Path
 
 
 while True:
 
     arquivo_a_ser_lido = input("Digite o nome do arquivo que será lido: ")
+
+    files_folder = Path('C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Instâncias/')
+    arquivo_a_ser_lido = files_folder / arquivo_a_ser_lido
 
     file = TSPfile(arquivo_a_ser_lido)
 
@@ -15,26 +20,6 @@ while True:
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
-
-    # MetodoResolucao = int(input("Digite o método que será usado para achar a solução\n 1-Randomico, 2-Vizinho mais proximo, 3-Inserção mais barata,4-VMPA ,5-Modelo : "))
-    # if MetodoResolucao == 1:
-    #     solucao.encontrarSolucaoRandomica()
-    # elif MetodoResolucao == 2:
-    # solucao.encontrarSolucaoVizinhoProximo()
-    # elif MetodoResolucao == 3:
-    # solucao.encontrarSolucaoInsercaoMaisBarata()
-    # elif MetodoResolucao == 4:
-    #     solucao.encontrarSolucaoVMPA()
-    # elif MetodoResolucao == 5:
-    #     solucao.encontrarSolucaoModelo()
-    # solucao.encontrarSolucaoInsercaoMaisBarata()
-    # solucao.findSolutionHVMP()
+    
     solucao.findSolutionHIMB()
-    # print(solucao)
     solucao.printDist()
-    # solucao.plotarSolucao(arquivo_a_ser_lido)
-
-    # continuar = input("Deseja realizar outra leitura? (S p/ sim) (N p/ não)" )
-
-    # if continuar == 'N':
-    #     break
