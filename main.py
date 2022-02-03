@@ -20,6 +20,6 @@ while True:
     numero_de_pontos = int(input("Digite o numero de pontos que terá a solução: "))
 
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
-    
-    solucao.findSolutionHIMB()
+
+    solucao.HVMP_HIMB()
     solucao.printDist()
