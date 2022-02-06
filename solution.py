@@ -1,3 +1,4 @@
+from os import remove
 import matplotlib.pyplot as plt
 import heapq
 from ponto import *
@@ -30,6 +31,7 @@ class Solution(object):
     def printPath(self):
         for i in self.__solucao:
             print(i,end="->")
+        print('\n')
 
     
 
@@ -44,23 +46,23 @@ class Solution(object):
     """ Funções auxiliares """
     def closerPoint(self,index):  #Dado um ponto(index) retorna o ponto mais próximo deste que não esteja na solução
         saiDe = self.__solucao[index] - 1
-        lesserDist = 0
+        lesserDist = -1
         for i in range(self.__dimension):
             dist = self.__matriz_dist[saiDe][i]
-            if((dist <= lesserDist ) or (lesserDist==0)):
+            if((dist <= lesserDist ) or (lesserDist==-1)):
                 if (i+1) not in self.__solucao:
                     lesserDist = dist
                     newPoint = i
         return newPoint,lesserDist
 
-    def closeToTheWay(self):
+    def closeToTheWay(self,n):
         pq = []
         for i in self.__solucao:
             for j in range(self.__dimension):
                 if i - 1 != j and j+1 not in self.__solucao:
                     heapq.heappush(pq,(self.__matriz_dist[i - 1][j],(i,j+1)))
-        pq = heapq.nsmallest(self.__n_pontos,pq)
-        print(pq)
+        pq = heapq.nsmallest(n,pq)
+        return pq
 
 
     """ Heuristícas construtivas """
@@ -73,7 +75,6 @@ class Solution(object):
             self.__dist += dist
             cont += 1
         self.__solType = "HVMP"
-        self.closeToTheWay()
 
     def findSolutionHIMB(self): #Heurística da inserção mais barata
         lista = []
@@ -162,6 +163,20 @@ class Solution(object):
         dist = self.__dist - self.__matriz_dist[I][nextI] - self.__matriz_dist[prevJ][J] + self.__matriz_dist[i][prevJ] + self.__matriz_dist[nextI][J] 
         return dist
 
+    def recalculateDist_addDrop(self,i,add):
+        posRemove = self.__solucao[i - 1] - 1
+        preRemove = self.__solucao[i - 2] - 1
+        posInsert = add[1][1] - 1
+        I = self.__solucao[i] - 1
+        if i == self.__n_pontos - 1:
+            dist = self.__dist - self.__matriz_dist[posRemove][I] - self.__matriz_dist[preRemove][posRemove]
+            dist = dist + self.__matriz_dist[preRemove][I] + self.__matriz_dist[I][posInsert]
+        else:
+            nextI = self.__solucao[i + 1] - 1
+            dist = self.__dist - self.__matriz_dist[posRemove][I] - self.__matriz_dist[I][nextI] - self.__matriz_dist[preRemove][posRemove]
+            dist = dist + self.__matriz_dist[preRemove][I] + self.__matriz_dist[I][posInsert] + self.__matriz_dist[posInsert][nextI]
+        return dist
+
     """ Buscas locais """
     def busca_local_troca(self):
         better = True
@@ -204,6 +219,23 @@ class Solution(object):
                             self.__dist = dist
                             better = True
 
+    def busca_local_addDrop(self):
+        better = True
+        pq = self.closeToTheWay(self.__n_pontos)
+        while better:
+            better = False
+            for add in pq:
+                for i in range(1,self.__n_pontos):
+                    if self.__solucao[i] == add[1][0] and add[1][1] not in self.__solucao:
+                        dist = self.recalculateDist_addDrop(i,add)
+                        if dist <= self.__dist:
+                            print("----------------------------------------------------------------------------------------------")
+                            self.__solucao.pop(i-1)
+                            self.__solucao.insert(i+1,add[1][1])
+                            dist = self.__dist
+                            better = True
+
+    """ Plotagem de solução """
     def plotarSolucao(self,nome_do_arquivo):
 
         solution = []

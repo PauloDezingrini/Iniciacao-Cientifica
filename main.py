@@ -10,9 +10,9 @@ while True:
     arquivo_a_ser_lido = input("Digite o nome do arquivo que será lido: ")
 
     files_folder = Path('C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Instâncias/')
-    arquivo_a_ser_lido = files_folder / arquivo_a_ser_lido
+    file = files_folder / arquivo_a_ser_lido
 
-    file = TSPfile(arquivo_a_ser_lido)
+    file = TSPfile(file)
 
     lista_de_pontos = file.getList()
     matrizDistancias = file.getMatriz()
@@ -22,5 +22,6 @@ while True:
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
     solucao.findSolutionHVMP()
+    solucao.busca_local_addDrop()
     solucao.printPath()
     solucao.printDist()
