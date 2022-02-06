@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import heapq
 from ponto import *
 
 class Solution(object):
@@ -16,18 +17,21 @@ class Solution(object):
         for ponto in self.__pontos:
             print("Ponto de numero:",ponto.getNumero()," com coordenadas: ",ponto.getX()," , ",ponto.getY())
         return "Com uma distancia total de " + str(self.__dist)
-
-    def getDist(self):
-        return self.__dist
     
     def printDist(self):
         print(round(self.__dist,2))
     
     def printSolution(self):
-        for i in range(len(self.__pontos) - 1):
-            n1 = self.__pontos[i] - 1
-            n2 = self.__pontos[i + 1] - 1
-            print(self.__matriz_de_distancias[n1][n2],end="->")
+        for i in range(len(self.__solucao) - 1):
+            n1 = self.__solucao[i] - 1
+            n2 = self.__solucao[i + 1] - 1
+            print(self.__matriz_dist[n1][n2],end="->")
+    
+    def printPath(self):
+        for i in self.__solucao:
+            print(i,end="->")
+
+    
 
     def calculateDist(self,solution):
         dist = 0
@@ -37,7 +41,7 @@ class Solution(object):
             dist += self.__matriz_dist[n1 - 1][n2 - 1]
         return round(dist,2)
 
-    """ Funções auxiliares para heuristícas construtivas """
+    """ Funções auxiliares """
     def closerPoint(self,index):  #Dado um ponto(index) retorna o ponto mais próximo deste que não esteja na solução
         saiDe = self.__solucao[index] - 1
         lesserDist = 0
@@ -48,6 +52,15 @@ class Solution(object):
                     lesserDist = dist
                     newPoint = i
         return newPoint,lesserDist
+
+    def closeToTheWay(self):
+        pq = []
+        for i in self.__solucao:
+            for j in range(self.__dimension):
+                if i - 1 != j and j+1 not in self.__solucao:
+                    heapq.heappush(pq,(self.__matriz_dist[i - 1][j],(i,j+1)))
+        pq = heapq.nsmallest(self.__n_pontos,pq)
+        print(pq)
 
 
     """ Heuristícas construtivas """
@@ -60,6 +73,7 @@ class Solution(object):
             self.__dist += dist
             cont += 1
         self.__solType = "HVMP"
+        self.closeToTheWay()
 
     def findSolutionHIMB(self): #Heurística da inserção mais barata
         lista = []

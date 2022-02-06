@@ -21,5 +21,6 @@ while True:
 
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
-    solucao.HVMP_HIMB()
+    solucao.findSolutionHVMP()
+    solucao.printPath()
     solucao.printDist()
