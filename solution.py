@@ -1,3 +1,4 @@
+from ctypes import sizeof
 from os import remove
 import matplotlib.pyplot as plt
 import heapq
@@ -155,27 +156,26 @@ class Solution(object):
         dist = dist + self.__matriz_dist[prevJ][I] + self.__matriz_dist[I][nextJ]
         return dist
 
-    def recalculateDist_2OPT(self,i,j):
+    def recalculateDist_addDrop(self,i,add,index):
+        dist = 0.0
         I = self.__solucao[i] - 1
-        nextI = self.__solucao[i + 1] - 1
-        J = self.__solucao[j] - 1
-        prevJ = self.__solucao[j - 1] - 1
-        dist = self.__dist - self.__matriz_dist[I][nextI] - self.__matriz_dist[prevJ][J] + self.__matriz_dist[i][prevJ] + self.__matriz_dist[nextI][J] 
-        return dist
-
-    def recalculateDist_addDrop(self,i,add):
-        posRemove = self.__solucao[i - 1] - 1
-        preRemove = self.__solucao[i - 2] - 1
-        posInsert = add[1][1] - 1
-        I = self.__solucao[i] - 1
+        prevI = self.__solucao[i - 1] - 1
+        insertAfter = add[1][0] - 1
+        insert = add[1][1] - 1
         if i == self.__n_pontos - 1:
-            dist = self.__dist - self.__matriz_dist[posRemove][I] - self.__matriz_dist[preRemove][posRemove]
-            dist = dist + self.__matriz_dist[preRemove][I] + self.__matriz_dist[I][posInsert]
+            nextInsertAfter = self.__solucao[index + 1] - 1
+            dist = self.__dist - self.__matriz_dist[prevI][I]
+            dist = dist - self.__matriz_dist[insertAfter][nextInsertAfter] + add[0] + self.__matriz_dist[insert][nextInsertAfter]
         else:
             nextI = self.__solucao[i + 1] - 1
-            dist = self.__dist - self.__matriz_dist[posRemove][I] - self.__matriz_dist[I][nextI] - self.__matriz_dist[preRemove][posRemove]
-            dist = dist + self.__matriz_dist[preRemove][I] + self.__matriz_dist[I][posInsert] + self.__matriz_dist[posInsert][nextI]
+            dist = self.__dist - self.__matriz_dist[prevI][I] - self.__matriz_dist[I][nextI] + self.__matriz_dist[prevI][nextI]
+            if index == self.__n_pontos - 1:
+                dist += add[0]
+            else:
+                nextInsertAfter = self.__solucao[index + 1] - 1
+                dist = dist - self.__matriz_dist[insertAfter][nextInsertAfter] + add[0] + self.__matriz_dist[insert][nextInsertAfter]
         return dist
+
 
     """ Buscas locais """
     def busca_local_troca(self):
@@ -210,30 +210,36 @@ class Solution(object):
         better = True
         while better:
             better = False
-            for i in range(1,self.__n_pontos):
+            for i in range(1,self.__n_pontos - 1):
                 for j in range(self.__n_pontos - 1,-1,-1):
                     if j>i:
-                        dist = self.recalculateDist_2OPT(i,j)
+                        s = self.__solucao[:]
+                        s[i:j+1] = reversed(s[i:j+1])
+                        dist = self.calculateDist(s)
                         if dist < self.__dist:
                             self.__solucao[i:j+1] = reversed(self.__solucao[i:j+1])
                             self.__dist = dist
                             better = True
+                    else:
+                        break
 
     def busca_local_addDrop(self):
         better = True
+        self.printPath()
         pq = self.closeToTheWay(self.__n_pontos)
+        print(pq)
         while better:
             better = False
             for add in pq:
+                print(add[1][1])
                 for i in range(1,self.__n_pontos):
-                    if self.__solucao[i] == add[1][0] and add[1][1] not in self.__solucao:
-                        dist = self.recalculateDist_addDrop(i,add)
-                        if dist <= self.__dist:
-                            print("----------------------------------------------------------------------------------------------")
-                            self.__solucao.pop(i-1)
-                            self.__solucao.insert(i+1,add[1][1])
-                            dist = self.__dist
-                            better = True
+                    if add[1][1] not in self.__solucao and add[1][0] != self.__solucao[i] and add[1][0] in self.__solucao:
+                        index = self.__solucao.index(add[1][0])
+                        dist = self.recalculateDist_addDrop(i,add,index)
+                        if dist < self.__dist:
+                            self.__solucao.pop(i)
+                            self.__solucao.insert(index+1,add[1][1])
+                            self.__dist = dist
 
     """ Plotagem de solução """
     def plotarSolucao(self,nome_do_arquivo):
