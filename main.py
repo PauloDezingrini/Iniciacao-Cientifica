@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import imp
 from TSPfile import TSPfile
 from solution import *
 from pathlib import Path
@@ -21,7 +20,7 @@ while True:
 
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
-    solucao.findSolutionHVMP()
-    solucao.busca_local_addDrop()
+    solucao.findSolutionHIMB()
+    solucao.busca_local_insercao()
     solucao.printPath()
     solucao.printDist()

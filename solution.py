@@ -2,6 +2,8 @@ from ctypes import sizeof
 from os import remove
 import matplotlib.pyplot as plt
 import heapq
+
+from numpy import True_
 from ponto import *
 
 class Solution(object):
@@ -137,23 +139,31 @@ class Solution(object):
     # para evitar refazer o calculo completo da distancia
     def recalculateDist_troca(self,i,j):
         I = self.__solucao[i] - 1
-        nextI = self.__solucao[i + 1] - 1
         prevI = self.__solucao[i - 1] - 1
         J = self.__solucao[j] - 1
-        nextJ = self.__solucao[j + 1] - 1
         prevJ = self.__solucao[j - 1] - 1
-        dist = self.__dist - self.__matriz_dist[prevI][I] - self.__matriz_dist[I][nextI] - self.__matriz_dist[prevJ][J] - self.__matriz_dist[J][nextJ]
-        dist = dist + self.__matriz_dist[prevI][J] + self.__matriz_dist[J][nextI] + self.__matriz_dist[prevJ][I] + self.__matriz_dist[I][nextJ]
+        dist = self.__dist - self.__matriz_dist[prevI][I]  - self.__matriz_dist[prevJ][J]
+        dist = dist + self.__matriz_dist[prevI][J] + self.__matriz_dist[prevJ][I]
+        if i != self.__n_pontos - 1:
+            nextI = self.__solucao[i + 1] - 1
+            dist = dist - self.__matriz_dist[I][nextI] + self.__matriz_dist[J][nextI]
+        if j != self.__n_pontos - 1:
+            nextJ = self.__solucao[j + 1] - 1
+            dist = dist - self.__matriz_dist[J][nextJ] + self.__matriz_dist[I][nextJ]
         return dist
 
     def recalculateDist_insercao(self,i,j):
         I = self.__solucao[i] - 1
-        prevI = self.__solucao[i] - 1
-        nextI = self.__solucao[i] - 1
-        prevJ = self.__solucao[j - 1] - 1
-        nextJ = self.__solucao[j + 1] - 1
-        dist = self.__dist - self.__matriz_dist[prevI][I] - self.__matriz_dist[I][nextI]
-        dist = dist + self.__matriz_dist[prevJ][I] + self.__matriz_dist[I][nextJ]
+        prevI = self.__solucao[i - 1] - 1
+        J = self.__solucao[j] - 1
+        dist = self.__dist - self.__matriz_dist[prevI][I] + self.__matriz_dist[J][I]
+        dist += self.__matriz_dist[J][I]
+        if i != self.__n_pontos - 1:
+            nextI = self.__solucao[i + 1] - 1
+            dist = dist - self.__matriz_dist[I][nextI] + self.__matriz_dist[prevI][nextI]
+        if j != self.__n_pontos -1 :
+            nextJ = self.__solucao[j + 1] - 1
+            dist = dist - self.__matriz_dist[J][nextJ] + self.__matriz_dist[I][nextJ]
         return dist
 
     def recalculateDist_addDrop(self,i,add,index):
@@ -185,11 +195,15 @@ class Solution(object):
             for i in range(1,self.__n_pontos - 1):
                 for j in range(i + 1,self.__n_pontos):
                     if j != i - 1 and j != i:
-                        dist = self.recalculateDist_troca(i,j)
+                        # dist = self.recalculateDist_troca(i,j)
+                        self.__solucao[i], self.__solucao[j] = self.__solucao[j], self.__solucao[i]
+                        dist = self.calculateDist(self.__solucao)
                         if dist < self.__dist:
-                            self.__solucao[i],self.__solucao[j] = self.__solucao[j],self.__solucao[i] 
                             self.__dist = dist
                             better = True
+                        else:
+                            self.__solucao[i], self.__solucao[j] = self.__solucao[j], self.__solucao[i]
+
 
     def busca_local_insercao(self):
         better = True
@@ -205,6 +219,16 @@ class Solution(object):
                             self.__solucao.insert(j,valueToInsert)
                             self.__dist = dist
                             better = True
+                        # s = self.__solucao[:]
+                        # valueToInsert = s[i]
+                        # s.pop(i)
+                        # s.insert(j,valueToInsert)
+                        # dist = self.calculateDist(s)
+                        # if dist < self.__dist:
+                        #     self.__solucao = s
+                        #     self.__dist = dist
+                        #     better = True
+        print(self.calculateDist(self.__solucao))
 
     def busca_local_2OPT(self):
         better = True
