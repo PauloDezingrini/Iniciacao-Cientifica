@@ -21,6 +21,6 @@ while True:
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
     solucao.findSolutionHIMB()
-    solucao.busca_local_insercao()
-    solucao.printPath()
+    solucao.busca_local_troca()
+    # solucao.printPath()
     solucao.printDist()
