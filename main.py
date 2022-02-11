@@ -20,7 +20,7 @@ while True:
 
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
-    solucao.findSolutionHIMB()
-    solucao.busca_local_troca()
-    # solucao.printPath()
+    solucao.findSolutionHIMB() 
+    print(solucao.longerDist(10))
+    solucao.plotarSolucao(arquivo_a_ser_lido)
     solucao.printDist()

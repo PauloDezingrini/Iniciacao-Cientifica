@@ -66,6 +66,15 @@ class Solution(object):
         pq = heapq.nsmallest(n,pq)
         return pq
 
+    def longerDist(self,n):
+        pq = []
+        for i in range(1,self.__n_pontos - 1):
+            I = self.__solucao[i] - 1
+            nextI = self.__solucao[i + 1] - 1
+            heapq.heappush(pq,(self.__matriz_dist[I][nextI],nextI + 1))
+        pq = heapq.nlargest(n,pq)
+        return pq
+
 
     """ Heuristícas construtivas """
     def findSolutionHVMP(self): #Heuristíca do vizinho mais próximo
