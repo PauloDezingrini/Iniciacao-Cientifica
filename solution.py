@@ -1,10 +1,7 @@
-from ctypes import sizeof
-from os import remove
-from time import sleep
 import matplotlib.pyplot as plt
 import heapq
 
-from numpy import True_, append
+from numpy import True_, append, empty, less
 from ponto import *
 
 class Solution(object):
@@ -87,7 +84,7 @@ class Solution(object):
             cont += 1
         self.__solType = "HVMP"
 
-    def findSolutionHIMB(self): #Heurística da inserção mais barata
+    def findSolutionHIMB(self,): #Heurística da inserção mais barata
         lista = []
         if self.__solucao == []:
             for i in range(1,self.__dimension):
@@ -103,7 +100,7 @@ class Solution(object):
 
         listSize = len(lista)
         while(count < self.__n_pontos):
-            lesserDist = 0
+            lesserDist = -1
             for i in range(count):
                 for j in range(listSize):
                     if lista[j] not in self.__solucao:
@@ -114,7 +111,7 @@ class Solution(object):
                         else:
                             indexNextI = self.__solucao[i+1] - 1
                             dist = self.__matriz_dist[indexI][indexJ] + self.__matriz_dist[indexJ][indexNextI] - self.__matriz_dist[indexI][indexNextI]
-                        if dist < lesserDist or lesserDist == 0:
+                        if dist < lesserDist or lesserDist == -1:
                             lesserDist = dist
                             after = i+1
                             where = j
@@ -124,6 +121,35 @@ class Solution(object):
             lista.pop(where)
             listSize -= 1
         self.__solType = "HIMB" 
+
+    def HIMB(self,point_list):
+        self.__solucao = []
+        self.__solucao.append(1)
+        point_list.remove(1)
+        count = 1
+        print(point_list)
+        while count < self.__n_pontos:
+            lesserDist = -1
+            for i in range(count):
+                for j in point_list:
+                    J = j - 1
+                    I = self.__solucao[i] - 1
+                    if i == count - 1:
+                        dist = self.__matriz_dist[I][J]
+                    else:
+                        nextI = self.__solucao[i+1] - 1
+                        dist = self.__matriz_dist[I][J] + self.__matriz_dist[J][nextI] - self.__matriz_dist[I][nextI]
+                    if dist <  lesserDist or lesserDist == -1:
+                        lesserDist = dist
+                        after = i + 1
+                        point = j
+            count += 1
+            self.__solucao.insert(after,point)
+            self.__dist += lesserDist
+            point_list.remove(point)
+        print(self.__solucao)
+        print(self.calculateDist(self.__solucao))
+        self.__solType = "Hybrid"
 
     def HVMP_HIMB(self): # Heuristíca híbrida
         self.findSolutionHVMP()
@@ -139,6 +165,22 @@ class Solution(object):
         self.calculateDist(self.__solucao)
         self.findSolutionHIMB()
         self.__solType = "Hybrid"
+
+    def HVMP_HIMB2(self,np):
+        self.findSolutionHVMP()
+        closer = self.closeToTheWay(np + 5)
+        longer = self.longerDist(np)
+        for point in longer:
+            self.__solucao.remove(point[1])
+        for point in closer:
+            if len(self.__solucao) == self.__n_pontos:
+                break
+            if point[1][0] in self.__solucao:
+                index = self.__solucao.index(point[1][0])
+                self.__solucao.insert(index+1,point[1][1])
+        point_list = self.__solucao[:]
+        self.busca_local_2OPT()
+        
 
     """ Funções auxiliares das buscas locais """
     # Todas as funções nesta seção tem como objetivo recalcular as distancias para cada uma das buscas locais,
@@ -161,7 +203,6 @@ class Solution(object):
                         better = True
                     else:
                         s[i], s[j] = s[j], s[i]
-        print("Distancia esperada: ",self.calculateDist(self.__solucao))
 
     def busca_local_insercao(self):
         better = True
