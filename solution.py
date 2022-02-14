@@ -1,3 +1,4 @@
+from math import ceil, floor
 import matplotlib.pyplot as plt
 import heapq
 
@@ -167,10 +168,10 @@ class Solution(object):
         self.__solType = "Hybrid"
 
     def HVMP_HIMB2(self,np):
-        if np > self.__n_pontos:
-            np = np/2
+        if np >= self.__n_pontos:
+            np = floor(np/2)
         self.findSolutionHVMP()
-        closer = self.closeToTheWay(np + 5)
+        closer = self.closeToTheWay(np)
         longer = self.longerDist(np)
         for point in longer:
             self.__solucao.remove(point[1])
@@ -180,8 +181,9 @@ class Solution(object):
             if point[1][0] in self.__solucao:
                 index = self.__solucao.index(point[1][0])
                 self.__solucao.insert(index+1,point[1][1])
-        point_list = self.__solucao[:]
-        self.busca_local_2OPT()
+        if len(self.__solucao) < self.__n_pontos:
+            self.findSolutionHIMB()
+        self.busca_local_insercao()
         
 
     """ Funções auxiliares das buscas locais """
