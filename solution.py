@@ -2,7 +2,7 @@ from math import ceil, floor
 import matplotlib.pyplot as plt
 import heapq
 
-from numpy import True_, append, empty, less
+from numpy import True_, append, empty, less, true_divide
 from ponto import *
 
 class Solution(object):
@@ -189,8 +189,16 @@ class Solution(object):
     """ Funções auxiliares das buscas locais """
     # Todas as funções nesta seção tem como objetivo recalcular as distancias para cada uma das buscas locais,
     # para evitar refazer o calculo completo da distancia
-
-
+    def recalculateDist_brute(self,i,j):
+        I = self.__solucao[i] - 1
+        prevI = self.__solucao[i - 1] - 1
+        dist = self.__dist - self.__matriz_dist[prevI][I]
+        dist += self.__matriz_dist[prevI][j]
+        if i != self.__n_pontos - 1: #Caso o ponto que está sendo testada a remoção não seja o último ponto temos que considerar as distância até o próximo após ele
+            nextI = self.__solucao[i + 1] - 1
+            dist = dist - self.__matriz_dist[I][nextI] + self.__matriz_dist[j][nextI]
+        return dist
+    
     """ Buscas locais """
     def busca_local_troca(self):
         better = True
@@ -268,6 +276,35 @@ class Solution(object):
         print("Entrou : ", _in)
         print(len(self.__solucao))
         print("Distancia esperada: ",self.calculateDist(self.__solucao))
+
+
+    def busca_local_bruta(self):
+        _out = []
+        _in = []
+        better = True
+        while better:
+            better = False
+            for i in range(1,self.__n_pontos): # Para cada ponto na solução
+                in_ = -1
+                newDist = 0
+                for j in range(1,self.__dimension): # Olhar cada ponto que não está na solução
+                    if j + 1 not in self.__solucao:
+                        dist = self.recalculateDist_brute(i,j)
+                        if dist < self.__dist:
+                            in_ = j
+                            newDist = dist
+                if in_ != -1:
+                    _out.append(self.__solucao[i])
+                    self.__solucao.pop(i)
+                    self.__solucao.insert(i,in_ + 1)
+                    _in.append(self.__solucao[i])
+                    self.__dist = newDist
+                    better = True
+        print("Saiu : ", _out)
+        print("Entrou : ", _in)
+        print(len(self.__solucao))
+        print("Distancia esperada: ",self.calculateDist(self.__solucao))
+        print("Distancia Obtida: ",self.__dist)
 
     """ Plotagem de solução """
     def plotarSolucao(self,nome_do_arquivo):
