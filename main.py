@@ -22,5 +22,5 @@ while True:
 
     # solucao.findSolutionHIMB()
     solucao.HVMP_HIMB2(5)
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
     solucao.printDist()
