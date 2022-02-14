@@ -167,6 +167,8 @@ class Solution(object):
         self.__solType = "Hybrid"
 
     def HVMP_HIMB2(self,np):
+        if np > self.__n_pontos:
+            np = np/2
         self.findSolutionHVMP()
         closer = self.closeToTheWay(np + 5)
         longer = self.longerDist(np)
