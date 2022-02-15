@@ -272,10 +272,10 @@ class Solution(object):
                                 _in.append(add[1][1])
                                 self.__dist = dist
                                 break
-        print("Saiu : ", _out)
-        print("Entrou : ", _in)
+        # print("Saiu : ", _out)
+        # print("Entrou : ", _in)
         print(len(self.__solucao))
-        print("Distancia esperada: ",self.calculateDist(self.__solucao))
+        # print("Distancia esperada: ",self.calculateDist(self.__solucao))
 
 
     def busca_local_bruta(self):
