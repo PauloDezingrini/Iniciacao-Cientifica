@@ -73,6 +73,35 @@ class Solution(object):
         pq = heapq.nlargest(n,pq)
         return pq
 
+    def auxHIMB(self):
+        pointList = self.__solucao[1:]
+        self.__solucao = []
+        self.__solucao.append(1)
+        count = 1
+        listSize = len(pointList)
+        self.__dist = 0
+        while(count < self.__n_pontos):
+            lesserDist = -1
+            for i in range(count):
+                for j in range(listSize):
+                    J = pointList[j] - 1
+                    I = self.__solucao[i] - 1
+                    dist = self.__matriz_dist[I][J]
+                    if i != count - 1:
+                        nextI = self.__solucao[i + 1] - 1
+                        dist = dist + self.__matriz_dist[J][nextI] - self.__matriz_dist[I][nextI]
+                    if dist < lesserDist or lesserDist == -1:
+                        lesserDist = dist
+                        after = i + 1
+                        where = j
+            count += 1
+            self.__solucao.insert(after,pointList[where])
+            self.__dist += lesserDist
+            pointList.pop(where)
+            listSize -= 1
+        self.__solType = "Hybrid"
+
+
 
     """ Heuristícas construtivas """
     def findSolutionHVMP(self): #Heuristíca do vizinho mais próximo
@@ -123,35 +152,6 @@ class Solution(object):
             listSize -= 1
         self.__solType = "HIMB" 
 
-    def HIMB(self,point_list):
-        self.__solucao = []
-        self.__solucao.append(1)
-        point_list.remove(1)
-        count = 1
-        print(point_list)
-        while count < self.__n_pontos:
-            lesserDist = -1
-            for i in range(count):
-                for j in point_list:
-                    J = j - 1
-                    I = self.__solucao[i] - 1
-                    if i == count - 1:
-                        dist = self.__matriz_dist[I][J]
-                    else:
-                        nextI = self.__solucao[i+1] - 1
-                        dist = self.__matriz_dist[I][J] + self.__matriz_dist[J][nextI] - self.__matriz_dist[I][nextI]
-                    if dist <  lesserDist or lesserDist == -1:
-                        lesserDist = dist
-                        after = i + 1
-                        point = j
-            count += 1
-            self.__solucao.insert(after,point)
-            self.__dist += lesserDist
-            point_list.remove(point)
-        print(self.__solucao)
-        print(self.calculateDist(self.__solucao))
-        self.__solType = "Hybrid"
-
     def HVMP_HIMB(self): # Heuristíca híbrida
         self.findSolutionHVMP()
         biggerDist = 0
@@ -168,7 +168,7 @@ class Solution(object):
         self.__solType = "Hybrid"
 
     def HVMP_HIMB2(self,np):
-        if np >= self.__n_pontos:
+        while np >= self.__n_pontos:
             np = floor(np/2)
         self.findSolutionHVMP()
         closer = self.closeToTheWay(np)
@@ -183,7 +183,7 @@ class Solution(object):
                 self.__solucao.insert(index+1,point[1][1])
         if len(self.__solucao) < self.__n_pontos:
             self.findSolutionHIMB()
-        self.busca_local_insercao()
+        self.auxHIMB()
         
 
     """ Funções auxiliares das buscas locais """
