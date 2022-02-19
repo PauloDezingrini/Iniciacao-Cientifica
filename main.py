@@ -21,7 +21,7 @@ while True:
     solucao = Solution(numero_de_pontos,lista_de_pontos,matrizDistancias,file.getDimension())
 
     solucao.HVMP_HIMB2(5)
-    solucao.busca_local_troca()
+    solucao.busca_local_insercao()
     # solucao.busca_local_addDrop()
     # solucao.HVMP_HIMB2(5)
     # solucao.plotarSolucao(arquivo_a_ser_lido)
