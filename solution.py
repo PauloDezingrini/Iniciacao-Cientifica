@@ -102,7 +102,6 @@ class Solution(object):
         self.__solType = "Hybrid"
 
 
-
     """ Heuristícas construtivas """
     def findSolutionHVMP(self): #Heuristíca do vizinho mais próximo
         self.__solucao.append(1)
@@ -184,6 +183,7 @@ class Solution(object):
         if len(self.__solucao) < self.__n_pontos:
             self.findSolutionHIMB()
         self.auxHIMB()
+        print(len(self.__solucao))
         
 
     """ Funções auxiliares das buscas locais """
