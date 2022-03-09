@@ -113,7 +113,7 @@ class Solution(object):
             cont += 1
         self.__solType = "HVMP"
 
-    def findSolutionHIMB(self,): #Heurística da inserção mais barata
+    def findSolutionHIMB(self): #Heurística da inserção mais barata
         lista = []
         if self.__solucao == []:
             for i in range(1,self.__dimension):
