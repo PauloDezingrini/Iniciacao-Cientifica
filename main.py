@@ -22,7 +22,7 @@ while True:
 
     solucao.HVMP_HIMB2(5)
     solucao.busca_local_addDrop()
-    solucao.busca_local_insercao()
+    solucao.busca_local_2OPT()
     # solucao.HVMP_HIMB2(5)
     # solucao.plotarSolucao(arquivo_a_ser_lido)
     solucao.printDist()
