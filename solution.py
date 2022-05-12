@@ -21,6 +21,9 @@ class Solution(object):
             print("Ponto de numero:",ponto.getNumero()," com coordenadas: ",ponto.getX()," , ",ponto.getY())
         return "Com uma distancia total de " + str(self.__dist)
     
+    def getDist(self):
+        return round(self.__dist,2)
+
     def printDist(self):
         print(round(self.__dist,2))
     
