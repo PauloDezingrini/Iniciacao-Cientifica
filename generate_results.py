@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from cgi import test
-import dis
-from fileinput import filename
 from TSPfile import TSPfile
 from solution import *
 from pathlib import Path
+from openpyxl import Workbook
+
 
 file_to_read = 0
 while file_to_read <= 0 or file_to_read > 3:
@@ -23,7 +22,12 @@ files_folder = Path(
 test_file = files_folder / file_to_read
 
 test_file = open(test_file, 'r')
-result_file = open('Resultados.txt', 'a')
+sheet_file = Workbook()
+
+sheet1 = sheet_file.active
+first_line = ("Instâncias", "Número de pontos", "Distância")
+
+sheet1.append(first_line)
 
 for line in test_file:
 
@@ -47,9 +51,11 @@ for line in test_file:
 
     # Altetar ou inserir aqui os métodos que serão utilizados para gerar os testes
     solution.findSolutionHVMP()
+    solution.busca_local_addDrop()
+    solution.busca_local_2OPT()
 
-    result_file.write(line[0] + " - " + line[1] + " -> " +
-                      str(solution.getDist()) + '\n')
+    new_line = (line[0], int(points_number), solution.getDist())
+    sheet1.append(new_line)
 
 test_file.close()
-result_file.close()
+sheet_file.save("resultados.xlsx")
