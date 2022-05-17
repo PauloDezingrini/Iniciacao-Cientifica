@@ -49,10 +49,10 @@ for line in test_file:
     solution = Solution(points_number, point_list,
                         dist_matrix, file.getDimension())
 
-    # Altetar ou inserir aqui os métodos que serão utilizados para gerar os testes
-    solution.findSolutionHIMB()
+    # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
+    solution.findSolutionHVMP()
     solution.busca_local_addDrop()
-    solution.busca_local_troca()
+    solution.busca_local_insercao()
 
     new_line = (line[0], int(points_number), solution.getDist())
     sheet1.append(new_line)
