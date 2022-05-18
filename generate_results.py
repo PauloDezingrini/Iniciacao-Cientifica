@@ -50,9 +50,9 @@ for line in test_file:
                         dist_matrix, file.getDimension())
 
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
-    solution.findSolutionHVMP()
+    solution.findSolutionHIMB()
     solution.busca_local_addDrop()
-    solution.busca_local_insercao()
+    solution.busca_local_troca()
 
     new_line = (line[0], int(points_number), solution.getDist())
     sheet1.append(new_line)
