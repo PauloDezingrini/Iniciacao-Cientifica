@@ -36,6 +36,8 @@ for line in test_file:
 
     file_name = line[0] + '.tsp'
 
+    print(f'Iniciando a execução do {line[0]}')
+
     files_folder = Path(
         'C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Instâncias/')
     file = files_folder / file_name
@@ -50,9 +52,16 @@ for line in test_file:
                         dist_matrix, file.getDimension())
 
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
-    solution.findSolutionHIMB()
-    solution.busca_local_addDrop()
-    solution.busca_local_troca()
+
+    solution.findSolutionHVMP()
+    solution.buscaLocalRVND()
+
+    # solution.findSolutionHIMB()
+    # solution.busca_local_addDrop()
+    # solution.busca_local_troca()
+
+    print(f'Terminando a execução do {line[0]}')
+    print("----------------------------------------------")
 
     new_line = (line[0], int(points_number), solution.getDist())
     sheet1.append(new_line)

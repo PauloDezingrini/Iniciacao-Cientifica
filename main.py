@@ -23,9 +23,8 @@ while True:
     solucao = Solution(numero_de_pontos, lista_de_pontos,
                        matrizDistancias, file.getDimension())
 
-    solucao.HVMP_HIMB2(5)
-    solucao.busca_local_addDrop()
-    solucao.busca_local_2OPT()
+    solucao.findSolutionHVMP()
+    solucao.buscaLocalRVND()
     # solucao.HVMP_HIMB2(5)
     # solucao.plotarSolucao(arquivo_a_ser_lido)
     solucao.printDist()

@@ -292,7 +292,6 @@ class Solution(object):
                                 break
         # print("Saiu : ", _out)
         # print("Entrou : ", _in)
-        print(len(self.__solucao))
         # print("Distancia esperada: ",self.calculateDist(self.__solucao))
 
     def busca_local_bruta(self):
@@ -338,6 +337,7 @@ class Solution(object):
         k = 1
         while k <= 3:
             oldDist = self.getDist()
+            print(oldDist)
             chosenLocalSearch = randint(1, 3)
             if chosenLocalSearch == 1:
                 self.busca_local_addDrop()
