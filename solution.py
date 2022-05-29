@@ -1,9 +1,9 @@
 from math import ceil, floor
-from random import randint
+from random import randint, random
+from threading import local
 import matplotlib.pyplot as plt
 import heapq
 
-from numpy import True_, append, empty, less, true_divide
 from ponto import *
 
 
@@ -334,20 +334,21 @@ class Solution(object):
             2 = 2-OPT
             3 = Inserção
         """
+        localSearchs = randomizeLocalSearchs()
         k = 1
         while k <= 3:
             oldDist = self.getDist()
-            print(oldDist)
-            chosenLocalSearch = randint(1, 3)
-            if chosenLocalSearch == 1:
+            chosenLS = localSearchs.pop()
+            if chosenLS == 1:
                 self.busca_local_addDrop()
-            elif chosenLocalSearch == 2:
+            elif chosenLS == 2:
                 self.busca_local_2OPT()
             else:
                 self.busca_local_insercao()
 
             if self.__dist < oldDist:
                 k = 1
+                localSearchs = randomizeLocalSearchs()
             else:
                 k += 1
 
@@ -492,3 +493,16 @@ class Solution(object):
         print(len(self.__solucao))
         print("Distancia esperada: ",self.calculateDist(self.__solucao))
     """
+
+
+""" Funções auxiliares das metaheurísticas """
+
+
+def randomizeLocalSearchs():
+    localSearchs = []
+    availableValues = [1, 2, 3]
+    while len(availableValues) != 0:
+        newInsert = randint(0, len(availableValues) - 1)
+        localSearchs.append(availableValues.pop(newInsert))
+
+    return localSearchs
