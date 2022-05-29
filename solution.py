@@ -1,6 +1,6 @@
 from math import ceil, floor
-from random import randint, random
-from threading import local
+from random import randint
+
 import matplotlib.pyplot as plt
 import heapq
 
@@ -73,6 +73,15 @@ class Solution(object):
                         pq, (self.__matriz_dist[i - 1][j], (i, j+1)))
         pq = heapq.nsmallest(n, pq)
         return pq
+
+    def closeToThePoint(self, i):
+        lesserDist = -1
+        for j in range(len(self.__dimension)):
+            dist = self.__matriz_dist[i][j]
+            if (dist < lesserDist) and (j + 1 not in self.__solucao):
+                lesserDist = dist
+                point = j + 1
+        return point
 
     def longerDist(self, n):
         pq = []
@@ -351,6 +360,25 @@ class Solution(object):
                 localSearchs = randomizeLocalSearchs()
             else:
                 k += 1
+
+    def ILS(self):
+        self.buscaLocalRVND()
+
+        k = 0
+        while k < 100:
+
+            # Perturb
+            j = 0
+            while j < 4:
+                index = randint(0, len(self.__solucao))
+                point_to_drop = self.__solucao[index]
+                new_point = self.closeToThePoint(point_to_drop - 1)
+                self.__solucao[index] = new_point
+
+            # Local Search
+            self.buscaLocalRVND()
+
+            pass
 
     """ Plotagem de solução """
 
