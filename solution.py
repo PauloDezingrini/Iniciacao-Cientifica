@@ -378,6 +378,7 @@ class Solution(object):
 
             # Local Search
             self.buscaLocalRVND()
+            k += 1
 
     """ Plotagem de solução """
 
