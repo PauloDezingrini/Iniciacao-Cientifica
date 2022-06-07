@@ -76,9 +76,9 @@ class Solution(object):
 
     def closeToThePoint(self, i):
         lesserDist = -1
-        for j in range(len(self.__dimension)):
+        for j in range(self.__dimension):
             dist = self.__matriz_dist[i][j]
-            if (dist < lesserDist) and (j + 1 not in self.__solucao):
+            if (dist < lesserDist or lesserDist == -1) and (j + 1 not in self.__solucao):
                 lesserDist = dist
                 point = j + 1
         return point
@@ -361,24 +361,23 @@ class Solution(object):
             else:
                 k += 1
 
-    def ILS(self):
+    def ILS(self, repeat):
         self.buscaLocalRVND()
 
         k = 0
-        while k < 100:
+        while k < repeat:
 
             # Perturb
             j = 0
             while j < 4:
-                index = randint(0, len(self.__solucao))
+                index = randint(0, len(self.__solucao) - 1)
                 point_to_drop = self.__solucao[index]
                 new_point = self.closeToThePoint(point_to_drop - 1)
                 self.__solucao[index] = new_point
+                j += 1
 
             # Local Search
             self.buscaLocalRVND()
-
-            pass
 
     """ Plotagem de solução """
 

@@ -54,7 +54,7 @@ for line in test_file:
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
 
     solution.findSolutionHVMP()
-    solution.buscaLocalRVND()
+    solution.ILS(100)
 
     # solution.findSolutionHIMB()
     # solution.busca_local_addDrop()
