@@ -15,7 +15,7 @@ if file_to_read == 1:
 elif file_to_read == 2:
     file_to_read = "Instancias-n2.txt"
 elif file_to_read == 3:
-    file_to_read = "Instancias-3n4.txt"
+    file_to_read = "Instancias-3n4 - Sem casos grandes.txt"
 
 files_folder = Path(
     'C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Arquivos de teste/')
