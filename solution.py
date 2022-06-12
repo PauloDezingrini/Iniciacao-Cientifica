@@ -92,36 +92,6 @@ class Solution(object):
         pq = heapq.nlargest(n, pq)
         return pq
 
-    def auxHIMB(self):
-        pointList = self.__solucao[1:]
-        self.__solucao = []
-        self.__solucao.append(1)
-        count = 1
-        listSize = len(pointList)
-        self.__dist = 0
-        while(count < self.__n_pontos):
-            lesserDist = -1
-            for i in range(count):
-                for j in range(listSize):
-                    J = pointList[j] - 1
-                    I = self.__solucao[i] - 1
-                    dist = self.__matriz_dist[I][J]
-                    if i != count - 1:
-                        nextI = self.__solucao[i + 1] - 1
-                        dist = dist + \
-                            self.__matriz_dist[J][nextI] - \
-                            self.__matriz_dist[I][nextI]
-                    if dist < lesserDist or lesserDist == -1:
-                        lesserDist = dist
-                        after = i + 1
-                        where = j
-            count += 1
-            self.__solucao.insert(after, pointList[where])
-            self.__dist += lesserDist
-            pointList.pop(where)
-            listSize -= 1
-        self.__solType = "Hybrid"
-
     """ Heuristícas construtivas """
 
     def findSolutionHVMP(self):  # Heuristíca do vizinho mais próximo
@@ -133,96 +103,6 @@ class Solution(object):
             self.__dist += dist
             cont += 1
         self.__solType = "HVMP"
-
-    def findSolutionHIMB(self):  # Heurística da inserção mais barata
-        lista = []
-        if self.__solucao == []:
-            for i in range(1, self.__dimension):
-                lista.append(i + 1)
-            self.__solucao.append(1)
-            self.__dist = 0
-            count = 1
-        else:
-            for i in range(self.__dimension):
-                if i+1 not in self.__solucao:
-                    lista.append(i+1)
-            count = len(self.__solucao)
-
-        listSize = len(lista)
-        while(count < self.__n_pontos):
-            lesserDist = -1
-            for i in range(count):
-                for j in range(listSize):
-                    if lista[j] not in self.__solucao:
-                        indexJ = lista[j] - 1
-                        indexI = self.__solucao[i] - 1
-                        if i == count - 1:
-                            dist = self.__matriz_dist[indexI][indexJ]
-                        else:
-                            indexNextI = self.__solucao[i+1] - 1
-                            dist = self.__matriz_dist[indexI][indexJ] + \
-                                self.__matriz_dist[indexJ][indexNextI] - \
-                                self.__matriz_dist[indexI][indexNextI]
-                        if dist < lesserDist or lesserDist == -1:
-                            lesserDist = dist
-                            after = i+1
-                            where = j
-            count += 1
-            self.__solucao.insert(after, lista[where])
-            self.__dist += lesserDist
-            lista.pop(where)
-            listSize -= 1
-        self.__solType = "HIMB"
-
-    def HVMP_HIMB(self):  # Heuristíca híbrida
-        self.findSolutionHVMP()
-        biggerDist = 0
-        biggerIndex = 0
-        lenght = self.__n_pontos - 1
-        for i in range(1, lenght):
-            dist = self.__matriz_dist[self.__solucao[i] -
-                                      1][self.__solucao[i+1] - 1]
-            if dist > biggerDist:
-                biggerDist = dist
-                biggerIndex = i
-        self.__solucao = self.__solucao[:biggerIndex]
-        self.calculateDist(self.__solucao)
-        self.findSolutionHIMB()
-        self.__solType = "Hybrid"
-
-    def HVMP_HIMB2(self, np):
-        while np >= self.__n_pontos:
-            np = floor(np/2)
-        self.findSolutionHVMP()
-        closer = self.closeToTheWay(np)
-        longer = self.longerDist(np)
-        for point in longer:
-            self.__solucao.remove(point[1])
-        for point in closer:
-            if len(self.__solucao) == self.__n_pontos:
-                break
-            if point[1][0] in self.__solucao:
-                index = self.__solucao.index(point[1][0])
-                self.__solucao.insert(index+1, point[1][1])
-        if len(self.__solucao) < self.__n_pontos:
-            self.findSolutionHIMB()
-        self.auxHIMB()
-        print(len(self.__solucao))
-
-    """ Funções auxiliares das buscas locais """
-    # Todas as funções nesta seção tem como objetivo recalcular as distancias para cada uma das buscas locais,
-    # para evitar refazer o calculo completo da distancia
-
-    def recalculateDist_brute(self, i, j):
-        I = self.__solucao[i] - 1
-        prevI = self.__solucao[i - 1] - 1
-        dist = self.__dist - self.__matriz_dist[prevI][I]
-        dist += self.__matriz_dist[prevI][j]
-        if i != self.__n_pontos - 1:  # Caso o ponto que está sendo testada a remoção não seja o último ponto temos que considerar as distância até o próximo após ele
-            nextI = self.__solucao[i + 1] - 1
-            dist = dist - \
-                self.__matriz_dist[I][nextI] + self.__matriz_dist[j][nextI]
-        return dist
 
     """ Buscas locais """
 
@@ -303,34 +183,14 @@ class Solution(object):
         # print("Entrou : ", _in)
         # print("Distancia esperada: ",self.calculateDist(self.__solucao))
 
-    def busca_local_bruta(self):
-        _out = []
-        _in = []
+    # Para cada ponto na solução, o remove e insere um de fora na melhor posição possível. Fará uso da estratégia de primeira melhora.
+    def busca_local_addDrop2(self):
         better = True
         while better:
             better = False
-            for i in range(1, self.__n_pontos):  # Para cada ponto na solução
-                in_ = -1
-                newDist = 0
-                # Olhar cada ponto que não está na solução
-                for j in range(1, self.__dimension):
-                    if j + 1 not in self.__solucao:
-                        dist = self.recalculateDist_brute(i, j)
-                        if dist < self.__dist:
-                            in_ = j
-                            newDist = dist
-                if in_ != -1:
-                    _out.append(self.__solucao[i])
-                    self.__solucao.pop(i)
-                    self.__solucao.insert(i, in_ + 1)
-                    _in.append(self.__solucao[i])
-                    self.__dist = newDist
-                    better = True
-        print("Saiu : ", _out)
-        print("Entrou : ", _in)
-        print(len(self.__solucao))
-        print("Distancia esperada: ", self.calculateDist(self.__solucao))
-        print("Distancia Obtida: ", self.__dist)
+            copySolution = self.__solucao
+            for i in range(1, self.__n_pontos):
+                copySolution.pop(i)
 
     """ Metaheurísticas """
 
@@ -433,94 +293,6 @@ class Solution(object):
         plt.savefig(nome, format='pdf')
         plt.show()
         return plt
-
-    """ Não funcionando corretamente """
-
-    def recalculateDist_troca(self, i, j):
-        print(self.__dist)
-        dist = 0.0
-        I = self.__solucao[i] - 1
-        prevI = self.__solucao[i - 1] - 1
-        J = self.__solucao[j] - 1
-        prevJ = self.__solucao[j - 1] - 1
-        dist = self.__dist - self.__matriz_dist[prevI][I] - self.__matriz_dist[prevJ][J] + \
-            self.__matriz_dist[prevI][J] + self.__matriz_dist[prevJ][I]
-        if i != self.__n_pontos - 1:
-            nextI = self.__solucao[i + 1] - 1
-            dist = dist - \
-                self.__matriz_dist[I][nextI] + self.__matriz_dist[J][nextI]
-        if j != self.__n_pontos - 1:
-            nextJ = self.__solucao[j + 1] - 1
-            dist = dist - \
-                self.__matriz_dist[J][nextJ] + self.__matriz_dist[I][nextJ]
-        return dist
-
-    def recalculateDist_insercao(self, i, j):
-        I = self.__solucao[i] - 1
-        prevI = self.__solucao[i - 1] - 1
-        J = self.__solucao[j] - 1
-        dist = self.__dist - \
-            self.__matriz_dist[prevI][I] + self.__matriz_dist[J][I]
-        dist += self.__matriz_dist[J][I]
-        if i != self.__n_pontos - 1:
-            nextI = self.__solucao[i + 1] - 1
-            dist = dist - \
-                self.__matriz_dist[I][nextI] + self.__matriz_dist[prevI][nextI]
-        if j != self.__n_pontos - 1:
-            nextJ = self.__solucao[j + 1] - 1
-            dist = dist - \
-                self.__matriz_dist[J][nextJ] + self.__matriz_dist[I][nextJ]
-        return dist
-
-    def recalculateDist_addDrop(self, i, add, index):
-
-        dist = 0.0
-        I = self.__solucao[i] - 1
-        prevI = self.__solucao[i - 1] - 1
-        insertAfter = add[1][0] - 1
-        insert = add[1][1] - 1
-        if i == self.__n_pontos - 1:
-            nextInsertAfter = self.__solucao[index + 1] - 1
-            dist = self.__dist - self.__matriz_dist[prevI][I]
-            dist = dist - self.__matriz_dist[insertAfter][nextInsertAfter] + \
-                add[0] + self.__matriz_dist[insert][nextInsertAfter]
-        else:
-            nextI = self.__solucao[i + 1] - 1
-            dist = self.__dist - \
-                self.__matriz_dist[prevI][I] - self.__matriz_dist[I][nextI] + \
-                self.__matriz_dist[prevI][nextI]
-            if index == self.__n_pontos - 1:
-                dist += add[0]
-            else:
-                nextInsertAfter = self.__solucao[index + 1] - 1
-                dist = dist - self.__matriz_dist[insertAfter][nextInsertAfter] + \
-                    add[0] + self.__matriz_dist[insert][nextInsertAfter]
-        return dist
-    """
-    def busca_local_addDrop(self):
-        _out = []
-        _in = []
-        better = True
-        pq = self.closeToTheWay(self.__n_pontos)
-        while better:
-            better = False
-            for add in pq:
-                for i in range(1,self.__n_pontos):
-                    if add[1][1] not in self.__solucao and add[1][0] != self.__solucao[i] and add[1][0] in self.__solucao:
-                        index = self.__solucao.index(add[1][0])
-                        dist = self.recalculateDist_addDrop(i,add,index)
-                        if dist < self.__dist:
-                            self.__solucao.pop(i)
-                            self.__solucao.insert(index+1,add[1][1])
-                            _out.append(self.__solucao[i])
-                            _in.append(add[1][1])
-                            self.__dist = dist
-                            break
-        print("Saiu : ", _out)
-        print("Entrou : ", _in)
-        print(len(self.__solucao))
-        print("Distancia esperada: ",self.calculateDist(self.__solucao))
-    """
 
 
 """ Funções auxiliares das metaheurísticas """
