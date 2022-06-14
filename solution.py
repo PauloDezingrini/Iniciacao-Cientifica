@@ -1,3 +1,4 @@
+from copy import copy
 from math import ceil, floor
 from random import randint
 
@@ -91,6 +92,12 @@ class Solution(object):
             heapq.heappush(pq, (self.__matriz_dist[I][nextI], nextI + 1))
         pq = heapq.nlargest(n, pq)
         return pq
+
+    def getNewRandomPoint(self):
+        i = 1
+        while i in self.__solucao:
+            i = randint(1, self.__dimension)
+        return i
 
     """ Heuristícas construtivas """
 
@@ -188,10 +195,31 @@ class Solution(object):
         better = True
         while better:
             better = False
-            copySolution = self.__solucao
             for i in range(1, self.__n_pontos):
-                copySolution.pop(i)
-
+                for j in range(1, self.__dimension):
+                    if j+1 not in self.__solucao:
+                        newDist = self.__dist
+                        #
+                        indexRemoved = self.__solucao[i] - 1
+                        indexPrev = self.__solucao[i - 1] - 1
+                        newDist = newDist - \
+                            self.__matriz_dist[indexPrev][indexRemoved] + \
+                            self.__matriz_dist[indexPrev][j]
+                        if i != self.__n_pontos - 1:
+                            indexNext = self.__solucao[i + 1] - 1
+                            newDist = newDist - \
+                                self.__matriz_dist[indexRemoved][indexNext] + \
+                                self.__matriz_dist[j][indexNext]
+                        oldPoint = self.__solucao[i]
+                        self.__solucao[i] = j+1
+                        newDist2 = self.calculateDist(self.__solucao)
+                        print(f'Obtido {newDist2} | Esperado {self.__dist} ')
+                        if newDist2 < self.__dist:
+                            self.__dist = newDist2
+                            print(self.__solucao)
+                        else:
+                            self.__solucao[i] = oldPoint
+                        #
     """ Metaheurísticas """
 
     def buscaLocalRVND(self):
