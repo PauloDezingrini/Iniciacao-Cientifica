@@ -198,18 +198,6 @@ class Solution(object):
             for i in range(1, self.__n_pontos):
                 for j in range(1, self.__dimension):
                     if j+1 not in self.__solucao:
-                        newDist = self.__dist
-                        #
-                        indexRemoved = self.__solucao[i] - 1
-                        indexPrev = self.__solucao[i - 1] - 1
-                        newDist = newDist - \
-                            self.__matriz_dist[indexPrev][indexRemoved] + \
-                            self.__matriz_dist[indexPrev][j]
-                        if i != self.__n_pontos - 1:
-                            indexNext = self.__solucao[i + 1] - 1
-                            newDist = newDist - \
-                                self.__matriz_dist[indexRemoved][indexNext] + \
-                                self.__matriz_dist[j][indexNext]
                         oldPoint = self.__solucao[i]
                         self.__solucao[i] = j+1
                         newDist2 = self.calculateDist(self.__solucao)
@@ -219,7 +207,6 @@ class Solution(object):
                             print(self.__solucao)
                         else:
                             self.__solucao[i] = oldPoint
-                        #
     """ Metaheurísticas """
 
     def buscaLocalRVND(self):
