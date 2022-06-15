@@ -11,6 +11,7 @@ burma14-3
 ch130-32
 ch150-37
 dantzig42-10
+eil51-12
 eil76-19
 eil101-25
 fri26-6

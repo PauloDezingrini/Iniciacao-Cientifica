@@ -201,10 +201,9 @@ class Solution(object):
                         oldPoint = self.__solucao[i]
                         self.__solucao[i] = j+1
                         newDist2 = self.calculateDist(self.__solucao)
-                        print(f'Obtido {newDist2} | Esperado {self.__dist} ')
                         if newDist2 < self.__dist:
                             self.__dist = newDist2
-                            print(self.__solucao)
+                            better = True
                         else:
                             self.__solucao[i] = oldPoint
     """ Metaheurísticas """
@@ -224,13 +223,12 @@ class Solution(object):
             oldDist = self.getDist()
             chosenLS = localSearchs.pop()
             if chosenLS == 1:
-                self.busca_local_addDrop()
+                self.busca_local_addDrop2()
             elif chosenLS == 2:
                 self.busca_local_2OPT()
             else:
                 self.busca_local_insercao()
-
-            if self.__dist < oldDist:
+            if self.getDist() < oldDist:
                 k = 1
                 localSearchs = randomizeLocalSearchs()
             else:
