@@ -5,6 +5,8 @@ from random import randint
 import matplotlib.pyplot as plt
 import heapq
 
+from numpy import less
+
 from ponto import *
 
 
@@ -98,6 +100,16 @@ class Solution(object):
         while i in self.__solucao:
             i = randint(1, self.__dimension)
         return i
+
+    # Dado um ponto retorna a melhor posição que este pode ser inserido na solução
+    def getBestPosition(self, point, solution):
+        lesserDist = -1
+        for i in range(1, len(solution)):
+            dist = self.__matriz_dist[point - 1][solution[i] - 1]
+            if dist < lesserDist or lesserDist == -1:
+                lesserDist = dist
+                posToInsert = i
+        return posToInsert
 
     """ Heuristícas construtivas """
 
@@ -193,19 +205,25 @@ class Solution(object):
     # Para cada ponto na solução, o remove e insere um de fora na melhor posição possível. Fará uso da estratégia de primeira melhora.
     def busca_local_addDrop2(self):
         better = True
+        br = False
         while better:
             better = False
             for i in range(1, self.__n_pontos):
+                if br:
+                    break
                 for j in range(1, self.__dimension):
                     if j+1 not in self.__solucao:
-                        oldPoint = self.__solucao[i]
-                        self.__solucao[i] = j+1
-                        newDist2 = self.calculateDist(self.__solucao)
-                        if newDist2 < self.__dist:
-                            self.__dist = newDist2
+                        newSolution = self.__solucao.copy()
+                        newSolution.pop(i)
+                        posInsert = self.getBestPosition(j+1, newSolution)
+                        newSolution.insert(posInsert+1, j+1)
+                        newDist = self.calculateDist(newSolution)
+                        if newDist < self.__dist:
+                            self.__dist = newDist
+                            self.__solucao = newSolution
+                            br = True
                             better = True
-                        else:
-                            self.__solucao[i] = oldPoint
+                            break
     """ Metaheurísticas """
 
     def buscaLocalRVND(self):
