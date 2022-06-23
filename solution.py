@@ -1,6 +1,7 @@
 from copy import copy
 from math import ceil, floor
 from random import randint
+from turtle import pos
 
 import matplotlib.pyplot as plt
 import heapq
@@ -252,6 +253,26 @@ class Solution(object):
             else:
                 k += 1
 
+    def swapPerturb(self):
+        pos1 = -1
+        pos2 = -1
+        while(pos1 == pos2):
+            pos1 = randint(1, len(self.__solucao) - 1)
+            pos2 = randint(1, len(self.__solucao) - 1)
+
+        aux = self.__solucao[pos1]
+        self.__solucao[pos1] = self.__solucao[pos2]
+        self.__solucao[pos2] = aux
+
+    def addDropPerturb(self):
+        index = randint(1, len(self.__solucao) - 1)
+        self.__solucao.pop(index)
+        i = 0
+        while i + 1 in self.__solucao:
+            i = randint(0, self.__dimension-1)
+        pos = self.getBestPosition(i, self.__solucao)
+        self.__solucao.insert(pos, i+1)
+
     def ILS(self, repeat):
         self.buscaLocalRVND()
 
@@ -261,16 +282,10 @@ class Solution(object):
             # Perturb
             j = 0
             while j < 4:
-                index = randint(1, len(self.__solucao) - 1)
-                self.__solucao.pop(index)
-                i = 0
-                while i + 1 in self.__solucao:
-                    i = randint(0, self.__dimension-1)
-                pos = self.getBestPosition(i, self.__solucao)
-                self.__solucao.insert(pos, i+1)
-                self.__dist = self.calculateDist(self.__solucao)
+                self.addDropPerturb()
                 j += 1
 
+            self.__dist = self.calculateDist(self.__solucao)
             # Local Search
             self.buscaLocalRVND()
             k += 1
