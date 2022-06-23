@@ -241,7 +241,7 @@ class Solution(object):
             oldDist = self.getDist()
             chosenLS = localSearchs.pop()
             if chosenLS == 1:
-                self.busca_local_addDrop2()
+                self.busca_local_addDrop()
             elif chosenLS == 2:
                 self.busca_local_2OPT()
             else:
@@ -261,10 +261,14 @@ class Solution(object):
             # Perturb
             j = 0
             while j < 4:
-                index = randint(0, len(self.__solucao) - 1)
-                point_to_drop = self.__solucao[index]
-                new_point = self.closeToThePoint(point_to_drop - 1)
-                self.__solucao[index] = new_point
+                index = randint(1, len(self.__solucao) - 1)
+                self.__solucao.pop(index)
+                i = 0
+                while i + 1 in self.__solucao:
+                    i = randint(0, self.__dimension-1)
+                pos = self.getBestPosition(i, self.__solucao)
+                self.__solucao.insert(pos, i+1)
+                self.__dist = self.calculateDist(self.__solucao)
                 j += 1
 
             # Local Search

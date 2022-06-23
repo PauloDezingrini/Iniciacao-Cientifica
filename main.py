@@ -24,7 +24,6 @@ while True:
                        matrizDistancias, file.getDimension())
 
     solucao.findSolutionHVMP()
-    solucao.busca_local_addDrop2()
+    solucao.ILS(100)
     solucao.printDist()
-    # solucao.HVMP_HIMB2(5)
     # solucao.plotarSolucao(arquivo_a_ser_lido)
