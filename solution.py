@@ -273,6 +273,15 @@ class Solution(object):
         pos = self.getBestPosition(i, self.__solucao)
         self.__solucao.insert(pos, i+1)
 
+    def randomPerturb(self):
+        index1 = randint(1, len(self.__solucao) - 1)
+        index2 = index1
+        while index1 == index2:
+            index2 = randint(1, len(self.__solucao) - 1)
+        aux = self.__solucao[index1]
+        self.__solucao[index1] = self.__solucao[index2]
+        self.__solucao[index2] = aux
+
     def ILS(self, repeat):
         self.buscaLocalRVND()
 
@@ -281,8 +290,8 @@ class Solution(object):
 
             # Perturb
             j = 0
-            while j < 4:
-                self.addDropPerturb()
+            while j < 1:
+                self.randomPerturb()
                 j += 1
 
             self.__dist = self.calculateDist(self.__solucao)
