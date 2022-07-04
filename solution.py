@@ -292,7 +292,8 @@ class Solution(object):
 
             # Perturb
             j = 0
-            while j < 1:
+            repeat2 = hashPerturb(k)
+            while j < repeat2:
                 perturb = randint(1, 2)
                 if perturb == 1:
                     self.randomPerturb()
@@ -371,3 +372,7 @@ def randomizeLocalSearchs():
         localSearchs.append(availableValues.pop(newInsert))
 
     return localSearchs
+
+
+def hashPerturb(i):
+    return (i/25) + 1
