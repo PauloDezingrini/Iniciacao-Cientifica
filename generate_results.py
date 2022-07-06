@@ -11,11 +11,11 @@ while file_to_read <= 0 or file_to_read > 4:
         "1 = n/4 \n2 = n/2 \n3 = 3n/4 \n4 = Selecionadas \nEscolha o valor de K: "))
 
 if file_to_read == 1:
-    file_to_read = "Instancias-n4 - Sem casos grandes.txt"
+    file_to_read = "InstanciasArtigo-n4.txt"
 elif file_to_read == 2:
-    file_to_read = "Instancias-n2.txt"
+    file_to_read = "InstanciasArtigo-n2.txt"
 elif file_to_read == 3:
-    file_to_read = "Instancias-3n4 - Sem casos grandes.txt"
+    file_to_read = "InstanciasArtigo-3n4.txt"
 elif file_to_read == 4:
     file_to_read = "Instâncias selecionadas.txt"
 
@@ -56,7 +56,7 @@ for line in test_file:
 
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
 
-    solution.findSolutionHVMP()
+    solution.findSolutionHIMB()
     # solution.buscaLocalRVND()
     solution.ILS(100)
 

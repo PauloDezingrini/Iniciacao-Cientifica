@@ -247,8 +247,6 @@ class Solution(object):
                 self.busca_local_2OPT()
             elif chosenLS == 3:
                 self.busca_local_insercao()
-            else:
-                self.busca_local_addDrop2()
             if self.getDist() < oldDist:
                 k = 1
                 localSearchs = randomizeLocalSearchs()
@@ -292,13 +290,8 @@ class Solution(object):
 
             # Perturb
             j = 0
-            repeat2 = hashPerturb(k)
-            while j < repeat2:
-                perturb = randint(1, 2)
-                if perturb == 1:
-                    self.randomPerturb()
-                else:
-                    self.addDropPerturb()
+            while j < 4:
+                self.addDropPerturb()
                 j += 1
 
             self.__dist = self.calculateDist(self.__solucao)
@@ -366,7 +359,7 @@ class Solution(object):
 
 def randomizeLocalSearchs():
     localSearchs = []
-    availableValues = [1, 2, 3, 4]
+    availableValues = [1, 2, 3]
     while len(availableValues) != 0:
         newInsert = randint(0, len(availableValues) - 1)
         localSearchs.append(availableValues.pop(newInsert))
