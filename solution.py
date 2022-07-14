@@ -23,12 +23,6 @@ class Solution(object):
         self.__solType = ""
         self.__dimension = dimension
 
-    def __str__(self):
-        for ponto in self.__pontos:
-            print("Ponto de numero:", ponto.getNumero(),
-                  " com coordenadas: ", ponto.getX(), " , ", ponto.getY())
-        return "Com uma distancia total de " + str(self.__dist)
-
     def getDist(self):
         return round(self.__dist, 2)
 
@@ -112,6 +106,14 @@ class Solution(object):
                 posToInsert = i
         return posToInsert
 
+    def getCloserNeightboors(self, point):
+        d1 = []
+        for i in range(self.__dimension):
+            if i+1 != point and i+1 not in self.__solucao:
+                d1.append((self.__matriz_dist[point - 1][i], i + 1))
+        d1.sort()
+        return d1
+
     """ Heuristícas construtivas """
 
     def findSolutionHVMP(self):  # Heuristíca do vizinho mais próximo
@@ -123,6 +125,18 @@ class Solution(object):
             self.__dist += dist
             cont += 1
         self.__solType = "HVMP"
+
+    def findSolutionRandomHVMP(self):
+        self.__solucao.append(1)
+        cont = 1
+        alpha = 0.1
+        while(cont < self.__n_pontos):
+            neightboors = self.getCloserNeightboors(self.__solucao[-1])
+            m = max(0, floor(alpha*len(neightboors) - 1))
+            r = randint(0, m)
+            self.__solucao.append(neightboors[r][1])
+            cont += 1
+        self.__dist = self.calculateDist(self.__solucao)
 
     """ Buscas locais """
 
