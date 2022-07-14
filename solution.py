@@ -128,6 +128,7 @@ class Solution(object):
 
     def findSolutionRandomHVMP(self):
         self.__solucao.append(1)
+        neightboors = []
         cont = 1
         alpha = 0.1
         while(cont < self.__n_pontos):
@@ -312,6 +313,22 @@ class Solution(object):
             # Local Search
             self.buscaLocalRVND()
             k += 1
+
+    def graspRVND(self, repeat):
+        cont = 0
+        currentDist = 0
+        currentSol = []
+        while(cont < repeat):
+            self.__solucao = []
+            self.findSolutionRandomHVMP()
+            self.buscaLocalRVND()
+            cont += 1
+            if self.__dist < currentDist or currentDist == 0:
+                currentDist = self.__dist
+                currentSol = self.__solucao.copy()
+
+        self.__solucao = currentSol.copy()
+        self.__dist = currentDist
 
     """ Plotagem de solução """
 

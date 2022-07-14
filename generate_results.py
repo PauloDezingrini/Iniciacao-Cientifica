@@ -56,13 +56,11 @@ for line in test_file:
 
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
 
-    solution.findSolutionHVMP()
-    # solution.buscaLocalRVND()
-    solution.ILS(100)
+    # solution.findSolutionHVMP()
+    # # solution.buscaLocalRVND()
+    # solution.ILS(100)
 
-    # solution.findSolutionHIMB()
-    # solution.busca_local_addDrop()
-    # solution.busca_local_troca()
+    solution.graspRVND(10)
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
