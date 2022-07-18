@@ -26,6 +26,9 @@ class Solution(object):
     def getDist(self):
         return round(self.__dist, 2)
 
+    def getNPoints(self):
+        return self.__n_pontos
+
     def printDist(self):
         print(round(self.__dist, 2))
 
@@ -117,8 +120,9 @@ class Solution(object):
     """ Heuristícas construtivas """
 
     def findSolutionHVMP(self):  # Heuristíca do vizinho mais próximo
-        self.__solucao.append(1)
-        cont = 1
+        if self.__solucao == []:
+            self.__solucao.append(1)
+        cont = len(self.__solucao)
         while(cont < self.__n_pontos):
             pos, dist = self.closerPoint(-1)
             self.__solucao.append(pos + 1)
@@ -126,18 +130,22 @@ class Solution(object):
             cont += 1
         self.__solType = "HVMP"
 
-    def findSolutionRandomHVMP(self):
+    def findSolutionRandomHVMP(self, n_points):
         self.__solucao.append(1)
         neightboors = []
         cont = 1
-        alpha = 0.1
-        while(cont < self.__n_pontos):
+        alpha = 0.2
+        while(cont < n_points):
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m = max(0, floor(alpha*len(neightboors) - 1))
             r = randint(0, m)
             self.__solucao.append(neightboors[r][1])
             cont += 1
         self.__dist = self.calculateDist(self.__solucao)
+
+    def findSolutionSemiRandomHVMP(self):
+        self.findSolutionRandomHVMP(floor(self.getNPoints()/4))
+        self.findSolutionHVMP()
 
     """ Buscas locais """
 
@@ -320,7 +328,7 @@ class Solution(object):
         currentSol = []
         while(cont < repeat):
             self.__solucao = []
-            self.findSolutionRandomHVMP()
+            self.findSolutionSemiRandomHVMP()
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:
