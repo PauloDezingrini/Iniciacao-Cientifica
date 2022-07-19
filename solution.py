@@ -134,7 +134,7 @@ class Solution(object):
         self.__solucao.append(1)
         neightboors = []
         cont = 1
-        alpha = 0.2
+        alpha = 0.15
         while(cont < n_points):
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m = max(0, floor(alpha*len(neightboors) - 1))
