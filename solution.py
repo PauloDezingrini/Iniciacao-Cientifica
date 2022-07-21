@@ -130,21 +130,20 @@ class Solution(object):
             cont += 1
         self.__solType = "HVMP"
 
-    def findSolutionRandomHVMP(self, n_points):
+    def findSolutionRandomHVMP(self, n_points, alfa):
         self.__solucao.append(1)
         neightboors = []
         cont = 1
-        alpha = 0.05
         while(cont < n_points):
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
-            m = max(0, floor(alpha*len(neightboors) - 1))
+            m = max(0, floor(alfa*len(neightboors) - 1))
             r = randint(0, m)
             self.__solucao.append(neightboors[r][1])
             cont += 1
         self.__dist = self.calculateDist(self.__solucao)
 
-    def findSolutionSemiRandomHVMP(self):
-        self.findSolutionRandomHVMP(floor(self.getNPoints()/4))
+    def findSolutionSemiRandomHVMP(self, alfa):
+        self.findSolutionRandomHVMP(floor(self.getNPoints()/4), alfa)
         self.findSolutionHVMP()
 
     """ Buscas locais """
@@ -327,8 +326,16 @@ class Solution(object):
         currentDist = 0
         currentSol = []
         while(cont < repeat):
+            if cont <= repeat/4:
+                alfa = 0.05
+            elif cont <= 2*repeat/4:
+                alfa = 0.10
+            elif cont <= 3*repeat/4:
+                alfa = 0.15
+            else:
+                alfa = 0.20
             self.__solucao = []
-            self.findSolutionSemiRandomHVMP()
+            self.findSolutionSemiRandomHVMP(alfa)
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:
