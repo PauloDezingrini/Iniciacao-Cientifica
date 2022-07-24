@@ -119,6 +119,8 @@ class Solution(object):
 
     """ Heuristícas construtivas """
 
+    """
+    Versão do vizinho mais próximo guloso.
     def findSolutionHVMP(self):  # Heuristíca do vizinho mais próximo
         if self.__solucao == []:
             self.__solucao.append(1)
@@ -129,7 +131,10 @@ class Solution(object):
             self.__dist += dist
             cont += 1
         self.__solType = "HVMP"
+    """
 
+    """
+    Versão do vizinho mais próximo aleatório utilizando porcentagens(Alfa)
     def findSolutionRandomHVMP(self, n_points, alfa):
         self.__solucao.append(1)
         neightboors = []
@@ -141,10 +146,25 @@ class Solution(object):
             self.__solucao.append(neightboors[r][1])
             cont += 1
         self.__dist = self.calculateDist(self.__solucao)
+    """
 
-    def findSolutionSemiRandomHVMP(self, alfa):
-        self.findSolutionRandomHVMP(floor(self.getNPoints()/4), alfa)
-        self.findSolutionHVMP()
+    def findSolutionRandomHVMP(self, n_points, m):
+        if self.__solucao == []:
+            self.__solucao.append(1)
+        neightboors = []
+        cont = 1
+        while(cont < n_points):
+            neightboors = self.getCloserNeightboors(self.__solucao[-1])
+            m1 = min(len(neightboors), m)
+            r = randint(0, m1 - 1)
+            self.__solucao.append(neightboors[r][1])
+            self.__dist += neightboors[r][0]
+            cont += 1
+        self.__dist = round(self.__dist, 2)
+
+    def findSolutionSemiRandomHVMP(self, m):
+        self.findSolutionRandomHVMP(floor(self.getNPoints()/4), m)
+        self.findSolutionRandomHVMP(self.__n_pontos, m)
 
     """ Buscas locais """
 
