@@ -169,7 +169,7 @@ class Solution(object):
         self.__dist = self.calculateDist(self.__solucao)
 
     def findSolutionSemiRandomHVMP(self, m):
-        self.findSolutionRandomHVMP(floor(self.getNPoints()/4) - 1, m)
+        self.findSolutionRandomHVMP(floor(self.getNPoints()/4) - 1, 1)
         self.findSolutionRandomHVMP(self.__n_pontos, m)
 
     """ Buscas locais """
