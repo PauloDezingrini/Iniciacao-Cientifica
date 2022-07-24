@@ -29,6 +29,9 @@ class Solution(object):
     def getNPoints(self):
         return self.__n_pontos
 
+    def getSolLen(self):
+        return len(self.__solucao)
+
     def printDist(self):
         print(round(self.__dist, 2))
 
@@ -154,6 +157,8 @@ class Solution(object):
         neightboors = []
         cont = 1
         while(cont < n_points):
+            if len(self.__solucao) > self.__n_pontos:
+                break
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m1 = min(len(neightboors), m)
             r = randint(0, m1 - 1)
@@ -161,9 +166,10 @@ class Solution(object):
             self.__dist += neightboors[r][0]
             cont += 1
         self.__dist = round(self.__dist, 2)
+        self.__dist = self.calculateDist(self.__solucao)
 
     def findSolutionSemiRandomHVMP(self, m):
-        self.findSolutionRandomHVMP(floor(self.getNPoints()/4), m)
+        self.findSolutionRandomHVMP(floor(self.getNPoints()/4) - 1, m)
         self.findSolutionRandomHVMP(self.__n_pontos, m)
 
     """ Buscas locais """
@@ -367,43 +373,22 @@ class Solution(object):
 
     """ Plotagem de solução """
 
-    def plotarSolucao(self, nome_do_arquivo):
+    def plotar(self, plt):
+        plt.show()
 
-        solution = []
-        for i in self.__solucao:
-            solution.append(self.__lista_de_pontos[i-1])
+    def plotSol(self, sol, ax, color):
+
         # Prepara os pontos pertencentes a solução para inserir no gráfico
         x = []
         y = []
-        for ponto in solution:
+        for ponto in sol:
             x.append(ponto.getX())
             y.append(ponto.getY())
-
-        # Prepara os demais pontos para inserir no gráfico
-        x1 = []
-        y1 = []
-        for ponto in self.__lista_de_pontos:
-            x1.append(ponto.getX())
-            y1.append(ponto.getY())
-
-        # Define o tamanho do gráfico a ser gerado
-        fig, ax = plt.subplots(figsize=(10, 6))
-        # Plota os demais pontos no gráfico
-        ax.scatter(x1, y1, marker='o')
         # Plota os pontos pertencentes a solução no gráfico
-        ax.plot(x, y, marker='o', color='red')
-
-        # Configura o titulo do gráfico
-        titulo = 'Solução da ' + self.__solType + ' para ' + \
-            nome_do_arquivo + '\nDistância Total k = ' + str(self.__dist)
-        ax.set(title=titulo, xlabel="Coordenadas x", ylabel="Coordenadas y")
+        ax.plot(x, y, marker='o', color=color)
 
         # Enumera todos os pontos do gráfico de acordo com seus respectivos numeros
-        for ponto in self.__lista_de_pontos:
-            if ponto not in solution:
-                plt.text(ponto.getX(), ponto.getY(), str(
-                    ponto.getNumero()), fontsize='small')
-        for ponto in solution:
+        for ponto in sol:
             if ponto.getNumero() == 1:
                 plt.text(ponto.getX(), ponto.getY(), str(
                     ponto.getNumero()), fontsize='large')
@@ -411,12 +396,46 @@ class Solution(object):
                 plt.text(ponto.getX(), ponto.getY(), str(
                     ponto.getNumero()), fontsize='medium')
 
+    def plotAllPoints(self, ax):
+        # Prepara os demais pontos para inserir no gráfico
+        x = []
+        y = []
+        for ponto in self.__lista_de_pontos:
+            x.append(ponto.getX())
+            y.append(ponto.getY())
+
+        # Plota os demais pontos no gráfico
+        ax.scatter(x, y, marker='o')
+
+    def createSol(self):
+        solution = []
+        for i in self.__solucao:
+            solution.append(self.__lista_de_pontos[i-1])
+        return solution
+
+    def plotarSolucao(self, nome_do_arquivo):
+
+        # Define o tamanho do gráfico a ser gerado
+        fig, ax = plt.subplots(figsize=(10, 6))
+
+        solution = self.createSol()
+
+        self.plotAllPoints(ax)
+
+        self.plotSol(solution, ax, 'red')
+
+        # Configura o titulo do gráfico
+        titulo = 'Solução da ' + self.__solType + ' para ' + \
+            nome_do_arquivo + '\nDistância Total k = ' + str(self.__dist)
+        ax.set(title=titulo, xlabel="Coordenadas x", ylabel="Coordenadas y")
+
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
+
         nome = 'Solução da ' + self.__solType + \
             ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
         plt.savefig(nome, format='pdf')
-        plt.show()
+        self.plotar(plt)
         return plt
 
 
