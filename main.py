@@ -23,8 +23,9 @@ while True:
     solucao = Solution(numero_de_pontos, lista_de_pontos,
                        matrizDistancias, file.getDimension())
 
-    solucao.findSolutionSemiRandomHVMP(4)
+    # solucao.findSolutionSemiRandomHVMP(4)
     # solucao.findSolutionHVMP()
+    solucao.findSolutionRandomHVMP2(2)
     print(solucao.getSolLen())
 
     solucao.plotarSolucao(arquivo_a_ser_lido)

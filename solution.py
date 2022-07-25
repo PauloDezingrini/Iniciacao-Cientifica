@@ -1,5 +1,6 @@
 from copy import copy
 from math import ceil, floor
+from operator import ne
 from random import randint
 from turtle import pos
 
@@ -167,6 +168,28 @@ class Solution(object):
             cont += 1
         self.__dist = round(self.__dist, 2)
         self.__dist = self.calculateDist(self.__solucao)
+
+    def findSolutionRandomHVMP2(self, k):
+        self.__solucao.append(1)
+        startRandomize = randint(1, floor(0.75*self.__n_pontos))
+        endRandomize = startRandomize + floor(self.__n_pontos/4)
+        cont = 1
+        neightboors = []
+        m = 1
+        while(cont < self.__n_pontos):
+            if cont == startRandomize:
+                print(f'Inicio da randomização no ponto {cont}')
+                m = k
+            elif cont == endRandomize:
+                print(f'Fim da randomização no ponto {cont}')
+                m = 1
+            neightboors = self.getCloserNeightboors(self.__solucao[-1])
+            m1 = min(len(neightboors), m)
+            r = randint(0, m1 - 1)
+            self.__solucao.append(neightboors[r][1])
+            self.__dist += neightboors[r][0]
+            cont += 1
+        pass
 
     def findSolutionSemiRandomHVMP(self, m):
         self.findSolutionRandomHVMP(floor(self.getNPoints()/4) - 1, 1)
@@ -432,8 +455,7 @@ class Solution(object):
         # Salva o gráfico como pdf no diretório do projeto
         posFormat = nome_do_arquivo.find('.')
 
-        nome = 'Solução da ' + self.__solType + \
-            ' para ' + nome_do_arquivo[:posFormat] + '.pdf'
+        nome = 'Solução  para' + nome_do_arquivo[:posFormat] + '.pdf'
         plt.savefig(nome, format='pdf')
         self.plotar(plt)
         return plt
