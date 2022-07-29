@@ -26,7 +26,6 @@ while True:
     # solucao.findSolutionSemiRandomHVMP(4)
     # solucao.findSolutionHVMP()
     solucao.findSolutionRandomHVMP2(2)
-    print(solucao.getSolLen())
 
     solucao.plotarSolucao(arquivo_a_ser_lido)
 

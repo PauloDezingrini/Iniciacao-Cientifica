@@ -169,7 +169,7 @@ class Solution(object):
         self.__dist = round(self.__dist, 2)
         self.__dist = self.calculateDist(self.__solucao)
 
-    def findSolutionRandomHVMP2(self, k):
+    def findSolutionRandomHVMP2(self, k):  # Semi-Aleatório
         self.__solucao.append(1)
         startRandomize = randint(1, floor(0.75*self.__n_pontos))
         endRandomize = startRandomize + floor(self.__n_pontos/4)
@@ -178,10 +178,12 @@ class Solution(object):
         m = 1
         while(cont < self.__n_pontos):
             if cont == startRandomize:
-                print(f'Inicio da randomização no ponto {cont}')
+                print(
+                    f'Inicio da randomização no ponto {self.__solucao[cont - 1]}')
                 m = k
             elif cont == endRandomize:
-                print(f'Fim da randomização no ponto {cont}')
+                print(
+                    f'Fim da randomização no ponto {self.__solucao[cont - 1]}')
                 m = 1
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m1 = min(len(neightboors), m)
@@ -190,10 +192,6 @@ class Solution(object):
             self.__dist += neightboors[r][0]
             cont += 1
         pass
-
-    def findSolutionSemiRandomHVMP(self, m):
-        self.findSolutionRandomHVMP(floor(self.getNPoints()/4) - 1, 1)
-        self.findSolutionRandomHVMP(self.__n_pontos, m)
 
     """ Buscas locais """
 
@@ -370,21 +368,13 @@ class Solution(object):
             self.buscaLocalRVND()
             k += 1
 
-    def graspRVND(self, repeat):
+    def graspRVND(self, repeat, m):
         cont = 0
         currentDist = 0
         currentSol = []
         while(cont < repeat):
-            if cont <= repeat/4:
-                alfa = 0.05
-            elif cont <= 2*repeat/4:
-                alfa = 0.10
-            elif cont <= 3*repeat/4:
-                alfa = 0.15
-            else:
-                alfa = 0.20
             self.__solucao = []
-            self.findSolutionSemiRandomHVMP(alfa)
+            self.findSolutionRandomHVMP(self.__n_pontos, m)
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:
