@@ -178,12 +178,12 @@ class Solution(object):
         m = 1
         while(cont < self.__n_pontos):
             if cont == startRandomize:
-                print(
-                    f'Inicio da randomização no ponto {self.__solucao[cont - 1]}')
+                # print(
+                #     f'Inicio da randomização no ponto {self.__solucao[cont - 1]}')
                 m = k
             elif cont == endRandomize:
-                print(
-                    f'Fim da randomização no ponto {self.__solucao[cont - 1]}')
+                # print(
+                #     f'Fim da randomização no ponto {self.__solucao[cont - 1]}')
                 m = 1
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m1 = min(len(neightboors), m)
@@ -374,7 +374,7 @@ class Solution(object):
         currentSol = []
         while(cont < repeat):
             self.__solucao = []
-            self.findSolutionRandomHVMP(self.__n_pontos, m)
+            self.findSolutionRandomHVMP2(m)
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:
