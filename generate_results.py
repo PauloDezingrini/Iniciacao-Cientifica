@@ -20,8 +20,7 @@ elif file_to_read == 4:
     file_to_read = "Instâncias selecionadas.txt"
 
 
-files_folder = Path(
-    'C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Arquivos de teste/')
+files_folder = Path('C:/Users/Paulo Dezingrini/Documents/Codes/Python/Iniciacao-Cientifica/Arquivos de teste')
 test_file = files_folder / file_to_read
 
 test_file = open(test_file, 'r')
@@ -41,8 +40,7 @@ for line in test_file:
 
     print(f'Iniciando a execução do {line[0]}')
 
-    files_folder = Path(
-        'C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Instâncias/')
+    files_folder = Path('C:/Users/Paulo Dezingrini/Documents/Codes/Python/Iniciacao-Cientifica/Instâncias/')
     file = files_folder / file_name
 
     file = TSPfile(file)
@@ -60,7 +58,7 @@ for line in test_file:
     # # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    solution.graspRVND(100, 4)
+    solution.graspRVND(100, 8)
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
