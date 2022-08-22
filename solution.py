@@ -15,7 +15,7 @@ from ponto import *
 class Solution(object):
     """ Funções básicas da classe """
 
-    def __init__(self, n_pontos, lista_de_pontos, matriz_dist, dimension):
+    def __init__(self, n_pontos, lista_de_pontos, matriz_dist, dimension): 
         self.__solucao = []
         self.__dist = 0
         self.__n_pontos = int(n_pontos)
@@ -32,6 +32,12 @@ class Solution(object):
 
     def getSolLen(self):
         return len(self.__solucao)
+
+    def getSolution(self):
+        return self.__solucao
+
+    def setSolution(self, solution):
+        self.__solucao = solution
 
     def printDist(self):
         print(round(self.__dist, 2))
@@ -169,7 +175,7 @@ class Solution(object):
         self.__dist = round(self.__dist, 2)
         self.__dist = self.calculateDist(self.__solucao)
 
-    def findSolutionRandomHVMP2(self, k):  # Semi-Aleatório
+    def findSolutionRandomHVMP2(self, k):  # Semi-Aleatório 
         self.__solucao.append(1)
         startRandomize = randint(1, floor(0.75*self.__n_pontos))
         endRandomize = startRandomize + floor(self.__n_pontos/4)
