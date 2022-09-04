@@ -14,7 +14,6 @@ from ponto import *
 
 class Solution(object):
     """ Funções básicas da classe """
-
     def __init__(self, n_pontos, lista_de_pontos, matriz_dist, dimension): 
         self.__solucao = []
         self.__dist = 0
