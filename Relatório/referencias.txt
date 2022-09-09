@@ -1,3 +1,4 @@
 http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsplib.html
 http://www.decom.ufop.br/gustavo/bcc342/Meta_Introducao.pdf
-	
+http://www.decom.ufop.br/prof/marcone/projects/ppm497-13/MetaheuristicasPesquisaOperacional-Cap11.pdf
+meta heuriscticas wikipedia
