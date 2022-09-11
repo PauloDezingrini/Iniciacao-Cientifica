@@ -9,7 +9,7 @@ while True:
     arquivo_a_ser_lido = input("Digite o nome do arquivo que será lido: ")
 
     files_folder = Path(
-        'C:/Users/Paulo Dezingrini/Desktop/Iniciacao-Cientifca/Instâncias/')
+        'C:/Users/Paulo Dezingrini/Documents/Codes/Python/Iniciacao-Cientifica/Instâncias/')
     file = files_folder / arquivo_a_ser_lido
 
     file = TSPfile(file)
@@ -26,10 +26,12 @@ while True:
     # solucao.findSolutionSemiRandomHVMP(4)
     # solucao.findSolutionHVMP()
     # solucao.findSolutionRandomHVMP2(2)
-    solucao.graspRVND(100, 2)
+    # solucao.graspRVND(100, 2)
+    solucao.findSolutionRandomHVMP(numero_de_pontos,1)
+    # solucao.buscaLocalRVND()
 
-    solucao.plotarSolucao(arquivo_a_ser_lido)
+    # solucao.plotarSolucao(arquivo_a_ser_lido)
 
-    # solucao.ILS(100)
-    # solucao.printDist()
+    solucao.ILS(100)
+    solucao.printDist()
     # solucao.plotarSolucao(arquivo_a_ser_lido)
