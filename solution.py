@@ -379,7 +379,8 @@ class Solution(object):
         currentSol = []
         while(cont < repeat):
             self.__solucao = []
-            self.findSolutionRandomHVMP(self.__n_pontos ,m)
+            # self.findSolutionRandomHVMP(self.__n_pontos ,m)
+            self.findSolutionRandomHVMP2(m)
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:
