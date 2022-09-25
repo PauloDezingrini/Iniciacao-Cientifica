@@ -4,6 +4,8 @@ from solution import *
 from pathlib import Path
 from openpyxl import Workbook
 
+import time
+
 
 file_to_read = 0
 while file_to_read <= 0 or file_to_read > 4:
@@ -30,6 +32,8 @@ sheet1 = sheet_file.active
 first_line = ("Instâncias", "Número de pontos", "Distância")
 
 sheet1.append(first_line)
+
+start_time = time.time()
 
 for line in test_file:
 
@@ -58,13 +62,17 @@ for line in test_file:
     # # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    solution.graspRVND(100, 40)
+    solution.graspRVND(200, 30)
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
 
     new_line = (line[0], int(points_number), solution.getDist())
     sheet1.append(new_line)
+
+end_time = time.time()
+
+print(f"{end_time - start_time} segundos")
 
 test_file.close()
 sheet_file.save("resultados.xlsx")
