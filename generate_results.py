@@ -62,7 +62,7 @@ for line in test_file:
     # # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    solution.graspRVND(200, 30)
+    solution.graspRVND(200, 40)
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
