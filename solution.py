@@ -3,6 +3,7 @@ from math import ceil, floor
 from operator import ne
 from random import randint
 from turtle import pos
+from mip import *
 
 import matplotlib.pyplot as plt
 import heapq
@@ -125,6 +126,64 @@ class Solution(object):
                 d1.append((self.__matriz_dist[point - 1][i], i + 1))
         d1.sort()
         return d1
+
+    """ Solução modelo"""
+    def encontrarSolucaoModelo(self):
+        self.__solType = "Modelo"
+        # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
+        size1 = set(range(len(self.__matriz_de_distancias[0]) -1))
+        size2 = set(range(1,len(self.__matriz_de_distancias[0])-1))
+
+        model = Model()
+        x = [[model.add_var(var_type=BINARY) for j in size1] for i in size1]
+        y = [model.add_var(var_type=BINARY) for i in size1]
+        F = [[model.add_var() for i in size1] for j in size1]
+
+        model.objective = minimize(xsum(self.__matriz_de_distancias[i][j]*x[i][j] for i in size1 for j in size1))
+
+        # Restricao 2 : Garante que só haverá uma rota saindo do ponto inicial
+        model += xsum(x[0][j] for j in size2) == 1
+        # Restricao 3 : Garante que não terá nenhuma rota chegando no ponto inicial
+        model += xsum(x[i][0] for i in size2) == 0
+
+        # Restricoes 4 e 5 : Garantem que só haverá uma rota saindo e uma chegando em cada ponto
+        for j in size1:
+            model += xsum(x[i][j] for i in size1 if i!=j) <= 1
+
+        for i in size1:
+            model += xsum(x[i][j] for j in size1 if i!=j) <= 1
+        
+        # Restriçao 6 : Garante que o número de pontos do modelo será igual ao número de pontos requisitado.
+        model += xsum(y[i] for i in size1) == self.__numero_de_pontos
+
+        # Restriçao 7
+        for i in size2:
+            model += (xsum(F[h][i]for h in size1) - xsum(F[i][j] for j in size1)) == y[i]
+        # Restriçao 8
+        for i in size1:
+            for j in size1:
+                model+= F[i][j] <= (self.__numero_de_pontos - 1)*x[i][j]
+        # Restriçao 9 : 
+        for j in size1:
+            model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
+
+        model.optimize(max_seconds=3600)
+        pontos_utilizados = []
+        if model.num_solutions:
+            self.__distTotal = model.objective_value
+            posSaida = 0
+            pontos_utilizados.append(0)
+            while True:
+                for i in size2:
+                    if(x[posSaida][i].x >= 0.90 and i not in pontos_utilizados):
+                        pontos_utilizados.append(i)
+                        posSaida = i
+                        break
+                if(len(pontos_utilizados) == self.__numero_de_pontos):
+                    break
+            for i in range(self.__numero_de_pontos):
+                self.__pontos.append(pontos_utilizados[i] + 1)
+
 
     """ Heuristícas construtivas """
 
@@ -380,7 +439,7 @@ class Solution(object):
         while(cont < repeat):
             self.__solucao = []
             self.findSolutionRandomHVMP(self.__n_pontos ,m)
-            # self.findSolutionRandomHVMP2(m)
+            # self.findSolutionRandomHVMP2(m) # Semi random
             self.buscaLocalRVND()
             cont += 1
             if self.__dist < currentDist or currentDist == 0:

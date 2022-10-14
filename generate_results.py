@@ -21,6 +21,7 @@ elif file_to_read == 3:
 elif file_to_read == 4:
     file_to_read = "Instâncias selecionadas.txt"
 
+sheet_name = input("Digite o nome do arquivo de saída: ")
 
 files_folder = Path('C:/Users/Paulo Dezingrini/Documents/Codes/Python/Iniciacao-Cientifica/Arquivos de teste')
 test_file = files_folder / file_to_read
@@ -29,11 +30,10 @@ test_file = open(test_file, 'r')
 sheet_file = Workbook()
 
 sheet1 = sheet_file.active
-first_line = ("Instâncias", "Número de pontos", "Distância")
+first_line = ("Instâncias", "Número de pontos", "Distância", "Tempo de execução")
 
 sheet1.append(first_line)
 
-start_time = time.time()
 
 for line in test_file:
 
@@ -62,17 +62,16 @@ for line in test_file:
     # # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    solution.graspRVND(100, 4)
+    start_time = time.time()
+    solution.graspRVND(300, 4)
+    end_time = time.time()  
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
 
-    new_line = (line[0], int(points_number), solution.getDist())
+    new_line = (line[0], int(points_number), solution.getDist(), end_time - start_time)
     sheet1.append(new_line)
 
-end_time = time.time()
-
-print(f"{end_time - start_time} segundos")
-
 test_file.close()
-sheet_file.save("resultados.xlsx")
+sheet_file.save(sheet_name + '.xlsx')
+
