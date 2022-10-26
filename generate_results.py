@@ -8,9 +8,9 @@ import time
 
 
 file_to_read = 0
-while file_to_read <= 0 or file_to_read > 6:
+while file_to_read <= 0 or file_to_read > 8:
     file_to_read = int(input(
-        "1 = n/4 \n2 = n/2 \n3 = 3n/4 \n4 = Selecionadas \n5 = Execução modelo 1\n 6 = Execução modelo 2\nEscolha o valor de K: "))
+        "1 = n/4 \n2 = n/2 \n3 = 3n/4 \n4 = Selecionadas \n5 = Execução modelo 1\n 6 = Execução modelo 2\n7 = Execução modelo 3\n8 = Execução modelo 4\nEscolha o valor de K: "))
 
 if file_to_read == 1:
     file_to_read = "InstanciasArtigo-n4.txt"
@@ -24,6 +24,10 @@ elif file_to_read == 5:
     file_to_read = "Execução modelo 1.txt"
 elif file_to_read == 6:
     file_to_read = "Execução modelo 2.txt"
+elif file_to_read == 7:
+    file_to_read = "Execução modelo 1-1.txt"
+elif file_to_read == 8:
+    file_to_read = "Execução modelo 2-1.txt"
 
 
 sheet_name = input("Digite o nome do arquivo de saída: ")
@@ -67,11 +71,11 @@ for line in test_file:
     # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    start_time = time.time()
-    solution.graspRVND(200, 4)
-    end_time = time.time()  
+    # start_time = time.time()
+    # solution.graspRVND(200, 4)
+    # end_time = time.time()  
 
-    # solution.encontrarSolucaoModelo()
+    solution.encontrarSolucaoModelo()
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
