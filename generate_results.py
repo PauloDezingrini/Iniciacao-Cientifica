@@ -8,9 +8,9 @@ import time
 
 
 file_to_read = 0
-while file_to_read <= 0 or file_to_read > 4:
+while file_to_read <= 0 or file_to_read > 6:
     file_to_read = int(input(
-        "1 = n/4 \n2 = n/2 \n3 = 3n/4 \n4 = Selecionadas \nEscolha o valor de K: "))
+        "1 = n/4 \n2 = n/2 \n3 = 3n/4 \n4 = Selecionadas \n5 = Execução modelo 1\n 6 = Execução modelo 2\nEscolha o valor de K: "))
 
 if file_to_read == 1:
     file_to_read = "InstanciasArtigo-n4.txt"
@@ -20,6 +20,11 @@ elif file_to_read == 3:
     file_to_read = "InstanciasArtigo-3n4.txt"
 elif file_to_read == 4:
     file_to_read = "Instâncias selecionadas.txt"
+elif file_to_read == 5:
+    file_to_read = "Execução modelo 1.txt"
+elif file_to_read == 6:
+    file_to_read = "Execução modelo 2.txt"
+
 
 sheet_name = input("Digite o nome do arquivo de saída: ")
 
@@ -59,17 +64,19 @@ for line in test_file:
     # Alterar ou inserir aqui os métodos que serão utilizados para gerar os testes
 
     # solution.findSolutionHVMP()
-    # # solution.buscaLocalRVND()
+    # solution.buscaLocalRVND()
     # solution.ILS(100)
 
     start_time = time.time()
-    solution.graspRVND(300, 4)
+    solution.graspRVND(200, 4)
     end_time = time.time()  
+
+    # solution.encontrarSolucaoModelo()
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
 
-    new_line = (line[0], int(points_number), solution.getDist(), end_time - start_time)
+    new_line = (line[0], int(points_number), solution.getDist())
     sheet1.append(new_line)
 
 test_file.close()

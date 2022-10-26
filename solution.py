@@ -131,15 +131,15 @@ class Solution(object):
     def encontrarSolucaoModelo(self):
         self.__solType = "Modelo"
         # size1 é utilizado em restrições que iniciam desde o primeiro ponto , enquanto o size2 exclui esse ponto
-        size1 = set(range(len(self.__matriz_de_distancias[0]) -1))
-        size2 = set(range(1,len(self.__matriz_de_distancias[0])-1))
+        size1 = set(range(len(self.__matriz_dist[0]) -1))
+        size2 = set(range(1,len(self.__matriz_dist[0])-1))
 
         model = Model()
         x = [[model.add_var(var_type=BINARY) for j in size1] for i in size1]
         y = [model.add_var(var_type=BINARY) for i in size1]
         F = [[model.add_var() for i in size1] for j in size1]
 
-        model.objective = minimize(xsum(self.__matriz_de_distancias[i][j]*x[i][j] for i in size1 for j in size1))
+        model.objective = minimize(xsum(self.__matriz_dist[i][j]*x[i][j] for i in size1 for j in size1))
 
         # Restricao 2 : Garante que só haverá uma rota saindo do ponto inicial
         model += xsum(x[0][j] for j in size2) == 1
@@ -154,7 +154,7 @@ class Solution(object):
             model += xsum(x[i][j] for j in size1 if i!=j) <= 1
         
         # Restriçao 6 : Garante que o número de pontos do modelo será igual ao número de pontos requisitado.
-        model += xsum(y[i] for i in size1) == self.__numero_de_pontos
+        model += xsum(y[i] for i in size1) == self.__n_pontos
 
         # Restriçao 7
         for i in size2:
@@ -162,7 +162,7 @@ class Solution(object):
         # Restriçao 8
         for i in size1:
             for j in size1:
-                model+= F[i][j] <= (self.__numero_de_pontos - 1)*x[i][j]
+                model+= F[i][j] <= (self.__n_pontos - 1)*x[i][j]
         # Restriçao 9 : 
         for j in size1:
             model += (xsum(x[i][j] for i in size1) - xsum(x[j][h] for h in size2)) <=1
@@ -170,7 +170,7 @@ class Solution(object):
         model.optimize(max_seconds=3600)
         pontos_utilizados = []
         if model.num_solutions:
-            self.__distTotal = model.objective_value
+            self.__dist = model.objective_value
             posSaida = 0
             pontos_utilizados.append(0)
             while True:
@@ -179,10 +179,10 @@ class Solution(object):
                         pontos_utilizados.append(i)
                         posSaida = i
                         break
-                if(len(pontos_utilizados) == self.__numero_de_pontos):
+                if(len(pontos_utilizados) == self.__n_pontos):
                     break
-            for i in range(self.__numero_de_pontos):
-                self.__pontos.append(pontos_utilizados[i] + 1)
+            for i in range(self.__n_pontos):
+                self.__solucao.append(pontos_utilizados[i] + 1)
 
 
     """ Heuristícas construtivas """
