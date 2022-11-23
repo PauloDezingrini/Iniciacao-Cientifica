@@ -34,4 +34,4 @@ while True:
 
     solucao.ILS(100)
     solucao.printDist()
-    # solucao.plotarSolucao(arquivo_a_ser_lido)
+    solucao.plotarSolucao(arquivo_a_ser_lido)

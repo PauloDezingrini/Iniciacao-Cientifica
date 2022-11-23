@@ -227,7 +227,7 @@ class Solution(object):
             neightboors = self.getCloserNeightboors(self.__solucao[-1])
             m1 = min(len(neightboors), m)
             r = randint(0, m1 - 1)
-            self.__solucao.append(neightboors[r][1])
+            self.__solucao.append(neightboors[r][1])    
             self.__dist += neightboors[r][0]
             cont += 1
         self.__dist = round(self.__dist, 2)

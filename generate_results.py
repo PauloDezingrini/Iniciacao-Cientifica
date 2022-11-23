@@ -71,16 +71,16 @@ for line in test_file:
     # solution.buscaLocalRVND()
     # solution.ILS(100)
 
-    # start_time = time.time()
-    # solution.graspRVND(200, 4)
-    # end_time = time.time()  
+    start_time = time.time()
+    solution.graspRVND(200, 4) 
+    end_time = time.time()  
 
-    solution.encontrarSolucaoModelo()
+    # solution.encontrarSolucaoModelo()
 
     print(f'Terminando a execução do {line[0]}')
     print("----------------------------------------------")
 
-    new_line = (line[0], int(points_number), solution.getDist())
+    new_line = (line[0], int(points_number), solution.getDist(), end_time - start_time)
     sheet1.append(new_line)
 
 test_file.close()
